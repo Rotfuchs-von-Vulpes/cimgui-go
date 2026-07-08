@@ -11,6 +11,8 @@ package sdlbackend
 // #cgo !gles2,darwin LDFLAGS: -framework OpenGL
 // #cgo gles2,darwin LDFLAGS: -lGLESv2
 // #cgo CPPFLAGS: -DCIMGUI_GO_USE_SDL2
+// #cgo CPPFLAGS: -I${SRCDIR}/../../cwrappers/imgui -I${SRCDIR}/../../cwrappers/imgui/backends -I${SRCDIR}/../../thirdparty/SDL/include
+// #cgo CXXFLAGS: -I${SRCDIR}/../../cwrappers/imgui -I${SRCDIR}/../../cwrappers/imgui/backends -I${SRCDIR}/../../thirdparty/SDL/include
 // #include <stdlib.h>
 // #include <stdint.h>
 // #include "sdl_backend.h"
@@ -238,7 +240,23 @@ func SDLGetError() string {
 }
 
 func NewSDLBackend() *SDLBackend {
+	return newSDLBackend(false)
+}
+
+// NewSDLSoftwareBackend creates an SDL2 backend that renders through
+// SDL_RENDERER_SOFTWARE, so ImGui drawing is performed on the CPU instead of OpenGL.
+func NewSDLSoftwareBackend() *SDLBackend {
+	return newSDLBackend(true)
+}
+
+func newSDLBackend(softwareRendering bool) *SDLBackend {
 	b := &SDLBackend{}
+	if softwareRendering {
+		C.igSDLSetSoftwareRendering(1)
+	} else {
+		C.igSDLSetSoftwareRendering(0)
+	}
+
 	// \returns 0 on success or a negative error code on failure; call
 	// SDL_GetError() for more information.
 	if C.igInitSDL() != 0 {
@@ -425,7 +443,7 @@ func (b *SDLBackend) SetCloseCallback(cbfun backend.WindowCloseCallback) {
 
 // SetWindowHint applies to next CreateWindow call
 // so use it before CreateWindow call ;-)
-// default applied flags: SDLWindowFlagsOpengl | SDLWindowFlagsResizable | SDLWindowFlagsAllowHighDPI
+// default applied flags: SDLWindowFlagsOpengl | SDLWindowFlagsResizable | SDLWindowFlagsAllowHighDPI for OpenGL, or SDLWindowFlagsResizable | SDLWindowFlagsAllowHighDPI for software rendering
 // set flag if value is 1, clear flag if value is 0
 func (b *SDLBackend) SetWindowFlags(flag SDLWindowFlags, value int) {
 	C.igSDLWindowHint(C.SDL_WindowFlags(flag), C.int(value))
@@ -503,7 +521,7 @@ func (b *SDLBackend) SizeCallback() backend.SizeChangeCallback {
 }
 
 func (b *SDLBackend) SetSwapInterval(interval SDLWindowFlags) error {
-	if C.SDL_GL_SetSwapInterval(C.int(interval)) != 0 {
+	if C.igSDLSetSwapInterval(C.int(interval)) != 0 {
 		return errors.New(SDLGetError())
 	}
 	return nil

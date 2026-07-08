@@ -50,6 +50,12 @@ CIMGUI_API void ImGui_ImplOpenGL2_UpdateTexture(ImTextureData* tex);
 
 #endif
 #ifdef CIMGUI_USE_SDL2
+
+CIMGUI_API bool ImGui_ImplSDLRenderer2_Init(SDL_Renderer* renderer);
+CIMGUI_API void ImGui_ImplSDLRenderer2_Shutdown(void);
+CIMGUI_API void ImGui_ImplSDLRenderer2_NewFrame(void);
+CIMGUI_API void ImGui_ImplSDLRenderer2_RenderDrawData(ImDrawData* draw_data, SDL_Renderer* renderer);
+
 #ifdef CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 
 typedef struct SDL_Window SDL_Window;

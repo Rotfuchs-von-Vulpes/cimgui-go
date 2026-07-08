@@ -2,20 +2,12 @@
 #define CIMGUI_USE_SDL2
 #define CIMGUI_USE_OPENGL3
 
-// Dear ImGui: standalone example application for SDL2 + OpenGL
-// (SDL is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan/Metal graphics context creation, etc.)
-
-// Learn about Dear ImGui:
-// - FAQ                  https://dearimgui.com/faq
-// - Getting Started      https://dearimgui.com/getting-started
-// - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
-// - Introduction, links and more at the top of imgui.cpp
-
 #include "sdl_backend.h"
 #include "../../cwrappers/cimgui.h"
 #include "../../cwrappers/cimgui_impl.h"
 
 #include <cstdlib>
+#include <stdint.h>
 #include <stdio.h>
 #include "../../thirdparty/SDL/include/SDL.h"
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -24,49 +16,78 @@
 #include "../../thirdparty/SDL/include/SDL_opengl.h"
 #endif
 
-// This example can also compile and run with Emscripten! See 'Makefile.emscripten' for details.
 #ifdef __EMSCRIPTEN__
 #include "../../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
 
 ImVec4 sdl_clear_color = *ImVec4_ImVec4_Float(0.45, 0.55, 0.6, 1.0);
-unsigned int sdl_target_fps = 30;
-
-SDL_WindowFlags sdl_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-
-ImVec4 clear_color = *ImVec4_ImVec4_Float(0.45, 0.55, 0.6, 1.0);
 
 // Setup SDL
+
+unsigned int sdl_target_fps = 30;
+
+static const SDL_WindowFlags sdl_opengl_default_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+static const SDL_WindowFlags sdl_software_default_flags = (SDL_WindowFlags)(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+static SDL_WindowFlags sdl_flags = sdl_opengl_default_flags;
+static bool sdl_use_software_renderer = false;
+static SDL_Renderer* sdl_renderer = NULL;
+static SDL_GLContext sdl_gl_context = NULL;
+
+static SDL_WindowFlags igSDLDefaultWindowFlags() {
+    return sdl_use_software_renderer ? sdl_software_default_flags : sdl_opengl_default_flags;
+}
+
+static Uint8 igSDLColorComponent(float value) {
+    if (value < 0.0f) {
+        value = 0.0f;
+    }
+    if (value > 1.0f) {
+        value = 1.0f;
+    }
+    return (Uint8)(value * 255.0f);
+}
+
+void igSDLSetSoftwareRendering(int enabled) {
+    sdl_use_software_renderer = enabled != 0;
+    sdl_flags = igSDLDefaultWindowFlags();
+}
+
 int igInitSDL() {
     return SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER);
 }
 
 // Main code
-SDL_Window* igCreateSDLWindow(const char* title, int width, int height,VoidCallback afterCreateContext)
+SDL_Window* igCreateSDLWindow(const char* title, int width, int height, VoidCallback afterCreateContext)
 {
-
+    
     // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
     // GL ES 2.0 + GLSL 100
     const char* glsl_version = "#version 100";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    if (!sdl_use_software_renderer) {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    }
 #elif defined(__APPLE__)
     // GL 3.2 Core + GLSL 150
     const char* glsl_version = "#version 150";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    if (!sdl_use_software_renderer) {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    }
 #else
     // GL 3.0 + GLSL 130
     const char* glsl_version = "#version 130";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    if (!sdl_use_software_renderer) {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    }
 #endif
 
     // From 2.0.18: Enable native IME.
@@ -75,19 +96,42 @@ SDL_Window* igCreateSDLWindow(const char* title, int width, int height,VoidCallb
 #endif
 
     // Create window with graphics context
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_Window* window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, sdl_flags);
-    sdl_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI); // reset default flags
-    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
-    if (!gl_context)
-    {
-        printf("Error creating SDL context %s\n", SDL_GetError());
-        exit(1);
+    SDL_WindowFlags window_flags = sdl_flags;
+    if (sdl_use_software_renderer) {
+        window_flags = (SDL_WindowFlags)(window_flags & ~SDL_WINDOW_OPENGL);
     }
-    SDL_GL_MakeCurrent(window, gl_context);
-    SDL_GL_SetSwapInterval(1); // Enable vsync
+
+    if (!sdl_use_software_renderer) {
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    }
+
+    SDL_Window* window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
+    sdl_flags = igSDLDefaultWindowFlags();
+    if (!window) {
+        printf("Error creating SDL window %s\n", SDL_GetError());
+        return NULL;
+    }
+
+    if (sdl_use_software_renderer) {
+        sdl_renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+        if (!sdl_renderer) {
+            printf("Error creating SDL software renderer %s\n", SDL_GetError());
+            SDL_DestroyWindow(window);
+            return NULL;
+        }
+        SDL_SetRenderDrawBlendMode(sdl_renderer, SDL_BLENDMODE_BLEND);
+    } else {
+        sdl_gl_context = SDL_GL_CreateContext(window);
+        if (!sdl_gl_context) {
+            printf("Error creating SDL context %s\n", SDL_GetError());
+            SDL_DestroyWindow(window);
+            return NULL;
+        }
+        SDL_GL_MakeCurrent(window, sdl_gl_context);
+        SDL_GL_SetSwapInterval(1);
+    }
 
     // Setup Dear ImGui context
     igCreateContext(0);
@@ -97,10 +141,12 @@ SDL_Window* igCreateSDLWindow(const char* title, int width, int height,VoidCallb
     }
 
     ImGuiIO* io = igGetIO_Nil();
-    io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-    io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+    io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    if (!sdl_use_software_renderer) {
+        io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    }
     //io.ConfigViewportsNoAutoMerge = true;
     //io.ConfigViewportsNoTaskBarIcon = true;
 
@@ -117,10 +163,14 @@ SDL_Window* igCreateSDLWindow(const char* title, int width, int height,VoidCallb
     }
 
     // Setup Platform/Renderer backends
-    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Load Fonts
+    if (sdl_use_software_renderer) {
+        ImGui_ImplSDL2_InitForSDLRenderer(window, sdl_renderer);
+        ImGui_ImplSDLRenderer2_Init(sdl_renderer);
+    } else {
+        ImGui_ImplSDL2_InitForOpenGL(window, sdl_gl_context);
+        ImGui_ImplOpenGL3_Init(glsl_version);
+    }
+// Load Fonts
     // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
     // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
     // - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
@@ -141,10 +191,10 @@ SDL_Window* igCreateSDLWindow(const char* title, int width, int height,VoidCallb
 }
 
 void igRefresh() {
-        SDL_Event redrawEvent;
-        redrawEvent.type = SDL_WINDOWEVENT;
-        redrawEvent.window.event = SDL_WINDOWEVENT_EXPOSED;
-        SDL_PushEvent(&redrawEvent);
+    SDL_Event redrawEvent;
+    redrawEvent.type = SDL_WINDOWEVENT;
+    redrawEvent.window.event = SDL_WINDOWEVENT_EXPOSED;
+    SDL_PushEvent(&redrawEvent);
 }
 
 void igSDLRunLoop(SDL_Window *window, VoidCallback loop, VoidCallback beforeRender, VoidCallback afterRender,
@@ -181,13 +231,26 @@ void igSDLRunLoop(SDL_Window *window, VoidCallback loop, VoidCallback beforeRend
         }
 
         // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
+        if (sdl_use_software_renderer) {
+            ImGui_ImplSDLRenderer2_NewFrame();
+        } else {
+            ImGui_ImplOpenGL3_NewFrame();
+        }
         ImGui_ImplSDL2_NewFrame();
         igNewFrame();
 
-        glViewport(0, 0, (int)io->DisplaySize.x, (int)io->DisplaySize.y);
-        glClearColor(sdl_clear_color.x * sdl_clear_color.w, sdl_clear_color.y * sdl_clear_color.w, sdl_clear_color.z * sdl_clear_color.w, sdl_clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (sdl_use_software_renderer) {
+            SDL_SetRenderDrawColor(sdl_renderer,
+                                   igSDLColorComponent(sdl_clear_color.x * sdl_clear_color.w),
+                                   igSDLColorComponent(sdl_clear_color.y * sdl_clear_color.w),
+                                   igSDLColorComponent(sdl_clear_color.z * sdl_clear_color.w),
+                                   igSDLColorComponent(sdl_clear_color.w));
+            SDL_RenderClear(sdl_renderer);
+        } else {
+            glViewport(0, 0, (int)io->DisplaySize.x, (int)io->DisplaySize.y);
+            glClearColor(sdl_clear_color.x * sdl_clear_color.w, sdl_clear_color.y * sdl_clear_color.w, sdl_clear_color.z * sdl_clear_color.w, sdl_clear_color.w);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
 
         // rendering
         if (loop != NULL) {
@@ -196,21 +259,26 @@ void igSDLRunLoop(SDL_Window *window, VoidCallback loop, VoidCallback beforeRend
 
         // Rendering
         igRender();
-        ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
+        if (sdl_use_software_renderer) {
+            ImGui_ImplSDLRenderer2_RenderDrawData(igGetDrawData(), sdl_renderer);
+            SDL_RenderPresent(sdl_renderer);
+        } else {
+            ImGui_ImplOpenGL3_RenderDrawData(igGetDrawData());
 
-        // Update and Render additional Platform Windows
-        // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-        //  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
-        if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-            SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-            igUpdatePlatformWindows();
-            igRenderPlatformWindowsDefault(0, 0);
-            SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+            // Update and Render additional Platform Windows
+            // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+            //  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
+            if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+            {
+                SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+                SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+                igUpdatePlatformWindows();
+                igRenderPlatformWindowsDefault(0, 0);
+                SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+            }
+
+            SDL_GL_SwapWindow(window);
         }
-
-        SDL_GL_SwapWindow(window);
 
         if (afterRender != NULL) {
             afterRender();
@@ -221,7 +289,11 @@ void igSDLRunLoop(SDL_Window *window, VoidCallback loop, VoidCallback beforeRend
 #endif
 
     // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
+    if (sdl_use_software_renderer) {
+        ImGui_ImplSDLRenderer2_Shutdown();
+    } else {
+        ImGui_ImplOpenGL3_Shutdown();
+    }
     ImGui_ImplSDL2_Shutdown();
 
     if (beforeDestroyContext != NULL) {
@@ -230,20 +302,29 @@ void igSDLRunLoop(SDL_Window *window, VoidCallback loop, VoidCallback beforeRend
 
     igDestroyContext(0);
 
-    SDL_GLContext gl_context = SDL_GL_GetCurrentContext();
-    SDL_GL_DeleteContext(gl_context);
+    if (sdl_use_software_renderer) {
+        SDL_DestroyRenderer(sdl_renderer);
+        sdl_renderer = NULL;
+    } else {
+        SDL_GL_DeleteContext(sdl_gl_context);
+        sdl_gl_context = NULL;
+    }
     SDL_DestroyWindow(window);
     SDL_Quit();
-
-    return;
 }
 
 void igSDLWindow_GetContentScale(SDL_Window *window, float *width, float *height) {
-  SDL_RenderGetScale(SDL_GetRenderer(window), width, height);
+    SDL_Renderer* renderer = SDL_GetRenderer(window);
+    if (renderer != NULL) {
+        SDL_RenderGetScale(renderer, width, height);
+        return;
+    }
+    *width = ImGui_ImplSDL2_GetContentScaleForWindow(window);
+    *height = *width;
 }
 
 void igSDLWindow_GetDisplaySize(SDL_Window *window, int *width, int *height) {
-  SDL_GetWindowSize(window, width, height);
+    SDL_GetWindowSize(window, width, height);
 }
 
 void igSDLWindow_GetWindowPos(SDL_Window *window, int *x, int *y) { SDL_GetWindowPosition(window, x, y); }
@@ -255,14 +336,14 @@ void igSDLWindow_SetSize(SDL_Window *window, int width, int height) { SDL_SetWin
 void igSDLWindow_SetTitle(SDL_Window *window, const char *title) { SDL_SetWindowTitle(window, title); }
 
 void igSDLWindow_SetSizeLimits(SDL_Window *window, int minWidth, int minHeight, int maxWidth, int maxHeight) {
-  SDL_SetWindowMinimumSize(window, minWidth, minHeight);
-  SDL_SetWindowMaximumSize(window, maxWidth, maxHeight);
+    SDL_SetWindowMinimumSize(window, minWidth, minHeight);
+    SDL_SetWindowMaximumSize(window, maxWidth, maxHeight);
 }
 
 // set flag if value is 1, clear flag if value is 0
 void igSDLWindowHint(SDL_WindowFlags hint, int value) {
     if (value == 1) {
-            sdl_flags = (SDL_WindowFlags)(sdl_flags | hint);
+        sdl_flags = (SDL_WindowFlags)(sdl_flags | hint);
     } else {
         sdl_flags = (SDL_WindowFlags)(sdl_flags & ~hint);
     }
@@ -272,25 +353,47 @@ void igSDLWindowHint(SDL_WindowFlags hint, int value) {
 }
 
 ImTextureID igCreateTexture(unsigned char *pixels, int width, int height) {
-  GLint last_texture;
-  GLuint texId;
+    if (sdl_use_software_renderer) {
+        SDL_Texture* texture = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, width, height);
+        if (texture == NULL) {
+            return (ImTextureID)0;
+        }
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        SDL_UpdateTexture(texture, NULL, pixels, width * 4);
+        return (ImTextureID)(intptr_t)texture;
+    }
 
-  glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-  glGenTextures(1, &texId);
-  glBindTexture(GL_TEXTURE_2D, texId);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    GLint last_texture;
+    GLuint texId;
+
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
+    glGenTextures(1, &texId);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
   // Restore state
-  glBindTexture(GL_TEXTURE_2D, last_texture);
+    glBindTexture(GL_TEXTURE_2D, last_texture);
 
-  return ImTextureID((intptr_t(texId)));
+    return ImTextureID((intptr_t(texId)));
 }
 
 void igDeleteTexture(ImTextureID id) {
-  glBindTexture(GL_TEXTURE_2D, 0);
-  glDeleteTextures(1, (GLuint *)(&id));
+    if (sdl_use_software_renderer) {
+        SDL_DestroyTexture((SDL_Texture*)(intptr_t)id);
+        return;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDeleteTextures(1, (GLuint *)(&id));
+}
+
+int igSDLSetSwapInterval(int interval) {
+    if (sdl_use_software_renderer) {
+        return 0;
+    }
+    return SDL_GL_SetSwapInterval(interval);
 }
 
 void igSetBgColor(ImVec4 color) { sdl_clear_color = color; }

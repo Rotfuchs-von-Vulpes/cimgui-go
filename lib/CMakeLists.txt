@@ -54,7 +54,7 @@ list(APPEND IMGUI_LIBRARIES glfw)
 #SDL
 set(SDL2_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/SDL)
 set(SDL2_INCLUDE_DIR ${SDL2_PREFIX}/include)
-list(APPEND IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/imgui/backends/imgui_impl_sdl2.cpp)
+list(APPEND IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/imgui/backends/imgui_impl_sdl2.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/imgui/backends/imgui_impl_sdlrenderer2.cpp)
 list(APPEND IMGUI_LIBRARIES sdl2)
 
 #opengl3

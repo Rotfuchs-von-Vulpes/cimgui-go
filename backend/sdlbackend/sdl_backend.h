@@ -168,14 +168,17 @@ unsigned char* pixels;
 }CImage ;
 
 typedef struct SDL_Window SDL_Window;
+typedef struct SDL_Renderer SDL_Renderer;
 //typedef struct GLFWmonitor GLFWmonitor;
 //typedef struct GLFWimage GLFWimage;
 struct SDL_Window;
+struct SDL_Renderer;
 //struct GLFWmonitor;
 //struct GLFWimage;
 
 extern void igSetBgColor(ImVec4 color);
 extern void igSetTargetFPS(unsigned int fps);
+extern void igSDLSetSoftwareRendering(int enabled);
 extern int igInitSDL();
 extern SDL_Window *igCreateSDLWindow(const char *title, int width, int height,
                                       VoidCallback afterCreateContext);
@@ -198,6 +201,7 @@ extern void igRefresh();
 extern ImTextureID igCreateTexture(unsigned char *pixels, int width, int height);
 extern void igDeleteTexture(ImTextureID id);
 extern void igSDLWindowHint(SDL_WindowFlags hint, int value);
+extern int igSDLSetSwapInterval(int interval);
 
 //extern void dropCallback(int, char **);
 //extern void closeCallback(SDL_Window *window);
