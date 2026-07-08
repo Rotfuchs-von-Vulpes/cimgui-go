@@ -1,4 +1,4 @@
-module github.com/AllenDang/cimgui-go
+module github.com/Rotfuchs-von-Vulpes/cimgui-go
 
 go 1.24.0
 
