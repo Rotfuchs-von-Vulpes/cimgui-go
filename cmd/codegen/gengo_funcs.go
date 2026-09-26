@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -8,6 +9,8 @@ import (
 
 	"github.com/kpango/glg"
 )
+
+var ErrEmptyName = errors.New("name is empty")
 
 // returnTypeType represents an arbitrary type of return value of the function.
 // for example Known reffers to returnTypeWrappersMap (see below)
@@ -76,7 +79,17 @@ func GenerateGoFuncs(
 			continue
 		}
 
-		args, argWrappers := generator.generateFuncArgs(f)
+		args, argWrappers, err := generator.generateFuncArgs(f)
+		if err != nil {
+			if context.flags.ShowNotGenerated {
+				glg.Warnf("Not generated: %v", f.FuncName)
+			}
+			if context.flags.Verbose {
+				glg.Debugf("Not generated: generating arguments for function %s: %w", f.FuncName, err)
+			}
+
+			continue
+		}
 
 		if len(f.ArgsT) == 0 {
 			generator.shouldGenerate = true
@@ -104,7 +117,8 @@ func GenerateGoFuncs(
 		}
 	}
 
-	glg.Infof("GO Functions generation complete. Generated %d/%d (%.2f%%)",
+	glg.Infof(
+		"GO Functions generation complete. Generated %d/%d (%.2f%%)",
 		generator.convertedFuncCount,
 		funcsToConvert,
 		100*float32(generator.convertedFuncCount)/float32(funcsToConvert),
@@ -241,7 +255,17 @@ func (g *goFuncsGenerator) GenerateFunction(f FuncDef, args []GoIdentifier, argW
 		returnType = rw.returnType
 	}
 
-	g.sb.WriteString(g.generateFuncDeclarationStmt(receiver, funcName, args, returnType, f))
+	stmt, err := g.generateFuncDeclarationStmt(receiver, funcName, args, returnType, f)
+	if err != nil {
+		if g.context.flags.Verbose {
+			glg.Debugf("Unable to generate function declaration: %s", err)
+		}
+
+		return false
+	}
+
+	g.sb.WriteString(stmt)
+
 	argInvokeStmt, declarations, finishers := g.generateFuncBody(argWrappers)
 	g.sb.WriteString(strings.Join(declarations, "\n"))
 	if len(declarations) > 0 {
@@ -256,7 +280,8 @@ func (g *goFuncsGenerator) GenerateFunction(f FuncDef, args []GoIdentifier, argW
 	// return Var switch
 	switch {
 	case returnTypeType.Is(returnTypeStruct | returnTypeCustomFin):
-		g.sb.WriteString(fmt.Sprintf(`
+		g.sb.WriteString(fmt.Sprintf(
+			`
 result := C.%s(%s)
 `,
 			f.CWrapperFuncName,
@@ -301,7 +326,7 @@ C.%s(selfArg, %s)
 // this method is responsible for createing a function declaration statement.
 // it takes function name, list of arguments and return type and returns go statement.
 // e.g.: func (self *ImGuiType) FuncName(arg1 type1, arg2 type2) returnType {
-func (g *goFuncsGenerator) generateFuncDeclarationStmt(receiver GoIdentifier, funcName CIdentifier, args []GoIdentifier, returnType GoIdentifier, f FuncDef) (functionDeclaration string) {
+func (g *goFuncsGenerator) generateFuncDeclarationStmt(receiver GoIdentifier, funcName CIdentifier, args []GoIdentifier, returnType GoIdentifier, f FuncDef) (functionDeclaration string, err error) {
 	funcParts := Split(funcName, "_")
 	typeName := funcParts[0]
 
@@ -320,6 +345,9 @@ func (g *goFuncsGenerator) generateFuncDeclarationStmt(receiver GoIdentifier, fu
 	}
 
 	goFuncName := funcName.renameGoIdentifier(g.context)
+	if len(goFuncName) == 0 {
+		return "", fmt.Errorf("funcName \"%s\" after renaming to Go identifier is empty: %w", funcName, ErrEmptyName)
+	}
 	// make sure goFuncName is exported
 	goFuncName = GoIdentifier(unicode.ToUpper(rune(goFuncName[0]))) + goFuncName[1:]
 
@@ -373,11 +401,15 @@ func (g *goFuncsGenerator) generateFuncDeclarationStmt(receiver GoIdentifier, fu
 		receiver,
 		goFuncName,
 		Join(args, ","),
-		returnType)
+		returnType), nil
 }
 
-func (g *goFuncsGenerator) generateFuncArgs(f FuncDef) (args []GoIdentifier, argWrappers []ArgumentWrapperData) {
+func (g *goFuncsGenerator) generateFuncArgs(f FuncDef) (args []GoIdentifier, argWrappers []ArgumentWrapperData, err error) {
 	for i, a := range f.ArgsT {
+		if err = a.Type.validateCType(); err != nil {
+			return nil, nil, fmt.Errorf("%v (arg %s) is not a valid C type: %w", a.Type, a.Name, err)
+		}
+
 		g.shouldGenerate = false
 
 		if a.Name == textLenRegisteredName {
@@ -421,7 +453,7 @@ func (g *goFuncsGenerator) generateFuncArgs(f FuncDef) (args []GoIdentifier, arg
 		}
 	}
 
-	return args, argWrappers
+	return args, argWrappers, nil
 }
 
 // isWrappableArrayPair reports whether the argument at index i is a pointer

@@ -59,7 +59,7 @@ func AfterCreateContext() {
 	texture = backend.NewTextureFromRgba(img)
 	implot.CreateContext()
 	textEditor = cte.NewTextEditor()
-	textEditor.SetLanguageDefinition(cte.Cpp)
+	textEditor.SetLanguage(cte.LanguageCpp())
 	textEditor.SetText(`// Colorize a C++ file
 #include <iostream>
 ImGui::Text("Hello World")`)
@@ -151,8 +151,7 @@ func ShowCTEDemo() {
 	imgui.SetNextWindowSizeV(imgui.NewVec2(250, 400), imgui.CondOnce)
 	imgui.Begin("Color Text Edit")
 
-	if textEditor.Render("Color Text Edit") {
-	}
+	textEditor.Render("Color Text Edit")
 
 	imgui.End()
 }

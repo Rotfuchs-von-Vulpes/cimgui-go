@@ -31,7 +31,7 @@ func generateGoEnums(enums []EnumDef, ctx *Context) ([]CIdentifier, error) {
 			if v.Comment != "" {
 				sb.WriteString(fmt.Sprintf("%s\n", v.Comment))
 			}
-			sb.WriteString(fmt.Sprintf("\t%s %s = %d\n", vName.renameGoIdentifier(ctx), eName, v.Value))
+			sb.WriteString(fmt.Sprintf("\t%s %s = %d\n", ToTitle(vName.renameGoIdentifier(ctx)), eName, v.Value))
 		}
 
 		sb.WriteString(")\n\n")

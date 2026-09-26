@@ -1,6 +1,6 @@
 package opengl3
 
-// #cgo CPPFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS -DIMGUI_USE_WCHAR32
+// #cgo CPPFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS -DIMGUI_USE_WCHAR32 -DCIMGUI_VARGS0
 // #cgo CXXFLAGS: --std=c++11
 // #cgo amd64,linux LDFLAGS: ${SRCDIR}/../../lib/linux/x64/cimgui.a
 // #cgo linux CXXFLAGS: -Wno-changes-meaning -Wno-invalid-conversion -fpermissive

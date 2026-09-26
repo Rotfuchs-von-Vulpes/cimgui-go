@@ -15,14 +15,46 @@ import (
 // #include "../imgui/extra_types.h"
 import "C"
 
+// // Allow axis to flip
+// // When true (default), the guizmo axis flip for better visibility
+// // When false, they always stay along the positive world/local axis
 func AllowAxisFlip(value bool) {
 	C.ImGuizmo_AllowAxisFlip(C.bool(value))
 }
 
+// // call BeginFrame right after ImGui_XXXX_NewFrame();
 func BeginFrame() {
 	C.ImGuizmo_BeginFrame()
 }
 
+// // Compute the world-space mouse picking ray from explicit inputs, without reading ImGui IO.
+// // Useful for tests/headless usage. view and projection are column-major float[16] (same
+// // layout as Manipulate). rayOrigin and rayDirection receive a float[3] each.
+func ComputeMouseRay(view, projection *float32, mousePosition, rectPosition, rectSize imgui.Vec2, rayOrigin, rayDirection *float32) {
+	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
+	projectionArg, projectionFin := internal.WrapNumberPtr[C.float, float32](projection)
+	rayOriginArg, rayOriginFin := internal.WrapNumberPtr[C.float, float32](rayOrigin)
+	rayDirectionArg, rayDirectionFin := internal.WrapNumberPtr[C.float, float32](rayDirection)
+	C.ImGuizmo_ComputeMouseRay(viewArg, projectionArg, internal.ReinterpretCast[C.ImVec2_c](mousePosition.ToC()), internal.ReinterpretCast[C.ImVec2_c](rectPosition.ToC()), internal.ReinterpretCast[C.ImVec2_c](rectSize.ToC()), rayOriginArg, rayDirectionArg)
+
+	viewFin()
+	projectionFin()
+	rayOriginFin()
+	rayDirectionFin()
+}
+
+// // helper functions for manualy editing translation/rotation/scale with an input float
+// // translation, rotation and scale float points to 3 floats each
+// // Angles are in degrees (more suitable for human editing)
+// // example:
+// // float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+// // ImGuizmo::DecomposeMatrixToComponents(gizmoMatrix.m16, matrixTranslation, matrixRotation, matrixScale);
+// // ImGui::InputFloat3("Tr", matrixTranslation, 3);
+// // ImGui::InputFloat3("Rt", matrixRotation, 3);
+// // ImGui::InputFloat3("Sc", matrixScale, 3);
+// // ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, gizmoMatrix.m16);
+// //
+// // These functions have some numerical stability issues for now. Use with caution.
 func DecomposeMatrixToComponents(matrix, translation, rotation, scale *float32) {
 	matrixArg, matrixFin := internal.WrapNumberPtr[C.float, float32](matrix)
 	translationArg, translationFin := internal.WrapNumberPtr[C.float, float32](translation)
@@ -36,6 +68,19 @@ func DecomposeMatrixToComponents(matrix, translation, rotation, scale *float32) 
 	scaleFin()
 }
 
+// // Render coordinate system axes (red X, green Y and blue Z). Usefull for debug/tests
+func DrawAxes(view, projection, matrices *float32, matrixCount int32) {
+	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
+	projectionArg, projectionFin := internal.WrapNumberPtr[C.float, float32](projection)
+	matricesArg, matricesFin := internal.WrapNumberPtr[C.float, float32](matrices)
+	C.ImGuizmo_DrawAxes(viewArg, projectionArg, matricesArg, C.int(matrixCount))
+
+	viewFin()
+	projectionFin()
+	matricesFin()
+}
+
+// // Render a cube with face color corresponding to face normal. Usefull for debug/tests
 func DrawCubes(view, projection, matrices *float32, matrixCount int32) {
 	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
 	projectionArg, projectionFin := internal.WrapNumberPtr[C.float, float32](projection)
@@ -58,8 +103,54 @@ func DrawGrid(view, projection, matrix *float32, gridSize float32) {
 	matrixFin()
 }
 
+// // Render grid with customizable major line step and amount of segments between major lines.
+// // NOTE(m.wlasiuk) : calling this function with majorStep = 1.0f and subdivision = 1 is equivalent to DrawGrid in terms of the end result but performs more calculations
+func DrawGridCustom(view, projection, matrix *float32, gridSize, majorStep float32, subdivision uint32) {
+	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
+	projectionArg, projectionFin := internal.WrapNumberPtr[C.float, float32](projection)
+	matrixArg, matrixFin := internal.WrapNumberPtr[C.float, float32](matrix)
+	C.ImGuizmo_DrawGridCustom(viewArg, projectionArg, matrixArg, C.float(gridSize), C.float(majorStep), C.uint(subdivision))
+
+	viewFin()
+	projectionFin()
+	matrixFin()
+}
+
+// // Render grid with customizable major line step and amount of segments between major lines and with possibility to set custom colors for major, minor and center lines
+func DrawGridCustomColor(view, projection, matrix *float32, gridSize, majorStep float32, subdivision, majorCol, minorCol, centerCol uint32) {
+	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
+	projectionArg, projectionFin := internal.WrapNumberPtr[C.float, float32](projection)
+	matrixArg, matrixFin := internal.WrapNumberPtr[C.float, float32](matrix)
+	C.ImGuizmo_DrawGridCustomColor(viewArg, projectionArg, matrixArg, C.float(gridSize), C.float(majorStep), C.uint(subdivision), C.ImU32(majorCol), C.ImU32(minorCol), C.ImU32(centerCol))
+
+	viewFin()
+	projectionFin()
+	matrixFin()
+}
+
+// // enable/disable the gizmo. Stay in the state until next call to Enable.
+// // gizmo is rendered with gray half transparent color when disabled
 func Enable(enable bool) {
 	C.ImGuizmo_Enable(C.bool(enable))
+}
+
+// // Returns which handle is actively being dragged, or MT_NONE.
+func GetActiveHandleType() MOVETYPE {
+	return MOVETYPE(C.ImGuizmo_GetActiveHandleType())
+}
+
+// // Aliases matching the MOVETYPE enum name.
+func GetActiveMoveType() MOVETYPE {
+	return MOVETYPE(C.ImGuizmo_GetActiveMoveType())
+}
+
+// // Returns which handle is currently hovered, or MT_NONE.
+func GetHoveredHandleType() MOVETYPE {
+	return MOVETYPE(C.ImGuizmo_GetHoveredHandleType())
+}
+
+func GetHoveredMoveType() MOVETYPE {
+	return MOVETYPE(C.ImGuizmo_GetHoveredMoveType())
 }
 
 func GetIDPtr(ptr_id uintptr) imgui.ID {
@@ -91,6 +182,7 @@ func GetStyle() *Style {
 	return NewStyleFromC(C.ImGuizmo_GetStyle())
 }
 
+// // from a x,y,z point in space and using Manipulation view/projection matrix, check if mouse is in pixel radius distance of that projected point
 func IsOverFloatPtr(position *float32, pixelRadius float32) bool {
 	positionArg, positionFin := internal.WrapNumberPtr[C.float, float32](position)
 
@@ -100,26 +192,32 @@ func IsOverFloatPtr(position *float32, pixelRadius float32) bool {
 	return C.ImGuizmo_IsOver_FloatPtr(positionArg, C.float(pixelRadius)) == C.bool(true)
 }
 
+// // return true if mouse cursor is over any gizmo control (axis, plan or screen component)
 func IsOver() bool {
 	return C.ImGuizmo_IsOver_Nil() == C.bool(true)
 }
 
+// // return true if the cursor is over the operation's gizmo
 func IsOverOPERATION(op OPERATION) bool {
 	return C.ImGuizmo_IsOver_OPERATION(C.OPERATION(op)) == C.bool(true)
 }
 
+// // return true if mouse IsOver or if the gizmo is in moving state
 func IsUsing() bool {
 	return C.ImGuizmo_IsUsing() == C.bool(true)
 }
 
+// // return true if any gizmo is in moving state
 func IsUsingAny() bool {
 	return C.ImGuizmo_IsUsingAny() == C.bool(true)
 }
 
+// // return true if the view gizmo is in moving state
 func IsUsingViewManipulate() bool {
 	return C.ImGuizmo_IsUsingViewManipulate() == C.bool(true)
 }
 
+// // only check if your mouse is over the view manipulator - no matter whether it's active or not
 func IsViewManipulateHovered() bool {
 	return C.ImGuizmo_IsViewManipulateHovered() == C.bool(true)
 }
@@ -165,7 +263,17 @@ func PushIDPtr(ptr_id uintptr) {
 	C.wrap_ImGuizmo_PushID_Ptr(C.uintptr_t(ptr_id))
 }
 
-// push string into the ID stack (will hash string).
+// // ID stack/scopes
+// // Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about how ID are handled in dear imgui.
+// // - Those questions are answered and impacted by understanding of the ID stack system:
+// //   - "Q: Why is my widget not reacting when I click on it?"
+// //   - "Q: How can I have widgets with an empty label?"
+// //   - "Q: How can I have multiple widgets with the same label?"
+// // - Short version: ID are hashes of the entire ID stack. If you are creating widgets in a loop you most likely
+// //   want to push a unique identifier (e.g. object pointer, loop index) to uniquely differentiate them.
+// // - You can also use the "Label##foobar" syntax within widget label to distinguish them from each others.
+// // - In this header file we use the "label"/"name" terminology to denote a string that will be displayed + used as an ID,
+// //   whereas "str_id" denote a string that is only used as an ID and not normally displayed.// push string into the ID stack (will hash string).
 func PushIDStr(str_id string) {
 	str_idArg, str_idFin := internal.WrapString[C.char](str_id)
 	C.ImGuizmo_PushID_Str(str_idArg)
@@ -203,14 +311,19 @@ func SetAlternativeWindow(window *imgui.Window) {
 	windowFin()
 }
 
+// // Configure the limit where axis are hidden
 func SetAxisLimit(value float32) {
 	C.ImGuizmo_SetAxisLimit(C.float(value))
 }
 
+// // Set an axis mask to permanently hide a given axis (true -> hidden, false -> shown)
 func SetAxisMask(x, y, z bool) {
 	C.ImGuizmo_SetAxisMask(C.bool(x), C.bool(y), C.bool(z))
 }
 
+//	// call inside your own window and before Manipulate() in order to draw gizmo to that window.
+//	// Or pass a specific ImDrawList to draw to (e.g. ImGui::GetForegroundDrawList()).
+//
 // SetDrawlistV parameter default value hint:
 // drawlist: nullptr
 func SetDrawlistV(drawlist *imgui.DrawList) {
@@ -228,6 +341,10 @@ func SetID(id int32) {
 	C.ImGuizmo_SetID(C.int(id))
 }
 
+// // this is necessary because when imguizmo is compiled into a dll, and imgui into another
+// // globals are not shared between them.
+// // More details at https://stackoverflow.com/questions/19373061/what-happens-to-global-and-static-variables-in-a-shared-library-when-it-is-dynam
+// // expose method to set imgui context
 func SetImGuiContext(ctx *imgui.Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImGuizmo_SetImGuiContext(internal.ReinterpretCast[*C.ImGuiContext](ctxArg))
@@ -235,10 +352,12 @@ func SetImGuiContext(ctx *imgui.Context) {
 	ctxFin()
 }
 
+// // default is false
 func SetOrthographic(isOrthographic bool) {
 	C.ImGuizmo_SetOrthographic(C.bool(isOrthographic))
 }
 
+// // Configure the limit where planes are hiden
 func SetPlaneLimit(value float32) {
 	C.ImGuizmo_SetPlaneLimit(C.float(value))
 }
@@ -247,6 +366,11 @@ func SetRect(x, y, width, height float32) {
 	C.ImGuizmo_SetRect(C.float(x), C.float(y), C.float(width), C.float(height))
 }
 
+// //
+// // Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en
+// // It seems to be a defensive patent in the US. I don't think it will bring troubles using it as
+// // other software are using the same mechanics. But just in case, you are now warned!
+// //
 func ViewManipulateFloat(view *float32, length float32, position, size imgui.Vec2, backgroundColor uint32) {
 	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
 	C.ImGuizmo_ViewManipulate_Float(viewArg, C.float(length), internal.ReinterpretCast[C.ImVec2_c](position.ToC()), internal.ReinterpretCast[C.ImVec2_c](size.ToC()), C.ImU32(backgroundColor))
@@ -254,6 +378,7 @@ func ViewManipulateFloat(view *float32, length float32, position, size imgui.Vec
 	viewFin()
 }
 
+// // use this version if you did not call Manipulate before and you are just using ViewManipulate
 func ViewManipulateFloatPtr(view, projection *float32, operation OPERATION, mode MODE, matrix *float32, length float32, position, size imgui.Vec2, backgroundColor uint32) {
 	viewArg, viewFin := internal.WrapNumberPtr[C.float, float32](view)
 	projectionArg, projectionFin := internal.WrapNumberPtr[C.float, float32](projection)

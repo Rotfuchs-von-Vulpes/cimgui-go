@@ -53,6 +53,10 @@
         "TypedefsPoolSize": 32,
         "TypedefsCustomPoolSizes": {
         },
+        "ExtendedArgsSuffix": "V",
+        "ExtendedArgsSuffixReplace": {
+            "ImDrawList_AddLine": "Args"
+        },
         "Replace": {
                 "igGetDrawData":           "CurrentDrawData",
                 "igGetDrawListSharedData": "CurrentDrawListSharedData",
@@ -90,7 +94,8 @@
                 "NULL":       "0",
                 "((void*)0)": "0",
                 "IMPLOT_AUTO_COL": "{0,0,0,-1}",
-                "ImPlotSpec()":    "*ImPlotSpec_ImPlotSpec()"
+                "ImPlotSpec()":    "*ImPlotSpec_ImPlotSpec()",
+                "std::string_view()": "\"\""
         },
         "DefaultArgArbitraryValue": {
                 "text_end":   "0",

@@ -1,3 +1,13 @@
 {
-  "TextEditor": "struct TextEditor"
+  "CodePoint": "struct CodePoint",
+  "Decorator": "struct Decorator",
+  "DocPos": "struct DocPos",
+  "DocSelection": "struct DocSelection",
+  "Glyph": "struct Glyph",
+  "Notifications": "struct Notifications",
+  "PopupData": "struct PopupData",
+  "TextDiff": "struct TextDiff",
+  "TextEditor": "struct TextEditor",
+  "TrieAutoComplete": "struct TrieAutoComplete",
+  "VisPos": "struct VisPos"
 }

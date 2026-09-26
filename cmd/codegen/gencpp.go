@@ -69,6 +69,14 @@ extern "C" {
 				f.Args = ReplaceAll(f.Args, a.Type, a.CustomType)
 				f.ArgsT[i].Type = a.CustomType
 			}
+
+			if err := f.ArgsT[i].Type.validateCType(); err != nil {
+				if ctx.flags.Verbose {
+					glg.Debugf("Invalid member %s type %s: %w", f.ArgsT[i].Name, f.ArgsT[i].Type, err)
+				}
+
+				shouldSkip = true
+			}
 		}
 
 		// Check args (some arg formats are skipped)
@@ -223,15 +231,9 @@ extern "C" {
 			for _, a := range f.ArgsT {
 				invocationArgs = append(invocationArgs, a.Name)
 
-				shouldIgnore := false
-				for k := range f.Defaults {
-					if string(a.Name) == k {
-						shouldIgnore = true
-						break
-					}
-				}
+				_, hasDefault := f.Defaults[string(a.Name)]
 
-				if !shouldIgnore {
+				if !hasDefault {
 					newArgsT = append(newArgsT, a)
 				}
 			}
@@ -286,10 +288,15 @@ extern "C" {
 				}
 			}
 
+			suffix := CIdentifier(ctx.preset.ExtendedArgsSuffix)
+			if s, ok := ctx.preset.ExtendedArgsSuffixReplace[funcName]; ok {
+				suffix = CIdentifier(s)
+			}
+
 			// Generate new function
 			funcDefs = append(funcDefs, FuncDef{
 				FuncName:         funcName,
-				OriginalFuncName: funcName + "V",
+				OriginalFuncName: funcName + suffix,
 				Args:             fmt.Sprintf("(%s)", strings.Join(newArgs, ",")),
 				ArgsT:            newArgsT,
 				InvocationStmt:   invocationStmt,
@@ -302,13 +309,13 @@ extern "C" {
 				Ret:              ret,
 				StName:           f.StName,
 				NonUDT:           f.NonUDT,
-				CWrapperFuncName: cWrapperFuncName + "V",
+				CWrapperFuncName: cWrapperFuncName + suffix,
 				AllCallArgs:      f.AllCallArgs,
 			})
 
 			// Add V as suffix to current function name
-			funcName += "V"
-			cWrapperFuncName += "V"
+			funcName += suffix
+			cWrapperFuncName += suffix
 		}
 
 		actualCallArgsStr := fmt.Sprintf("(%s)", Join(actualCallArgs, ","))
@@ -451,6 +458,12 @@ extern "C" {
 				continue
 			}
 
+			if err := m.Type.validateCType(); err != nil {
+				if context.flags.Verbose {
+					glg.Debugf("Invalid member %s type %s: %w", m.Name, m.Type, err)
+				}
+			}
+
 			setterFuncName := CIdentifier(fmt.Sprintf("%[1]s_Set%[2]s", s.Name, Capitalize(Split(m.Name, "[")[0])))
 			if skipFuncNames[setterFuncName] || context.ShouldSkipFunc(setterFuncName) {
 				if context.flags.ShowNotGenerated {
@@ -533,6 +546,12 @@ extern "C" {
 				continue
 			}
 
+			if err := m.Type.validateCType(); err != nil {
+				if context.flags.Verbose {
+					glg.Debugf("Invalid member %s type %s: %w", m.Name, m.Type, err)
+				}
+			}
+
 			getterFuncName := CIdentifier(fmt.Sprintf("%[1]s_Get%[2]s", s.Name, Capitalize(Split(m.Name, "[")[0])))
 			if skipFuncNames[getterFuncName] || context.ShouldSkipFunc(getterFuncName) {
 				continue
@@ -586,12 +605,14 @@ extern "C" {
 
 			// here we change void* to uintptr_t for .go handling
 			if m.Type == "void*" {
-				fmt.Fprintf(sbCpp,
+				fmt.Fprintf(
+					sbCpp,
 					"%s%s %s(%s *self) { return (uintptr_t)self->%s; }\n",
 					memberType, getPtrIfSize(m.Size), getterFuncDef.CWrapperFuncName, s.Name, Split(m.Name, "[")[0],
 				)
 			} else {
-				fmt.Fprintf(sbCpp,
+				fmt.Fprintf(
+					sbCpp,
 					"%s%s %s(%s *self) { return self->%s; }\n",
 					memberType, getPtrIfSize(m.Size), getterFuncDef.CWrapperFuncName, s.Name, Split(m.Name, "[")[0],
 				)
@@ -666,7 +687,8 @@ func AddArrayIndexGetter(t CIdentifier, sbHeader, sbCpp *strings.Builder, contex
 		Split(t, "[")[0], getterFuncName,
 	)
 
-	fmt.Fprintf(sbCpp,
+	fmt.Fprintf(
+		sbCpp,
 		"%[1]s %[2]s(%[1]s *self, int index) { return self[index]; }\n",
 		t, getterFuncName,
 	)

@@ -3,6 +3,7 @@ package main
 import (
 	"sort"
 	"strings"
+	"unicode"
 )
 
 func HasPrefix[s ~string](str s, prefix string) bool {
@@ -76,8 +77,8 @@ func SliceToMap[T comparable](s []T) map[T]bool {
 	return m
 }
 
-func MergeMaps[T comparable](maps ...map[T]bool) map[T]bool {
-	result := make(map[T]bool)
+func MergeMaps[T comparable, S any](maps ...map[T]S) map[T]S {
+	result := make(map[T]S)
 	for _, m := range maps {
 		for k, v := range m {
 			result[k] = v
@@ -103,4 +104,10 @@ func MapContainsAny[T ~string, S ~string](key T, dict []S) bool {
 	}
 
 	return false
+}
+
+func ToTitle[T ~string](t T) T {
+	s := []rune(t)
+	s[0] = unicode.ToUpper(s[0])
+	return T(s)
 }

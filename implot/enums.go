@@ -3,288 +3,444 @@
 
 package implot
 
+// Axis indices. The values assigned may change; NEVER hardcode these.
 // original name: ImAxis_
 type AxisEnum int32
 
 const (
-	AxisX1    AxisEnum = 0
-	AxisX2    AxisEnum = 1
-	AxisX3    AxisEnum = 2
-	AxisY1    AxisEnum = 3
-	AxisY2    AxisEnum = 4
+	// enabled by default
+	AxisX1 AxisEnum = 0
+	// disabled by default
+	AxisX2 AxisEnum = 1
+	// disabled by default
+	AxisX3 AxisEnum = 2
+	// enabled by default
+	AxisY1 AxisEnum = 3
+	// disabled by default
+	AxisY2 AxisEnum = 4
+	// disabled by default
 	AxisY3    AxisEnum = 5
 	AxisCOUNT AxisEnum = 6
 )
 
+// Options for plot axes (see SetupAxis).
 // original name: ImPlotAxisFlags_
 type AxisFlags int32
 
 const (
-	AxisFlagsNone          AxisFlags = 0
-	AxisFlagsNoLabel       AxisFlags = 1
-	AxisFlagsNoGridLines   AxisFlags = 2
-	AxisFlagsNoTickMarks   AxisFlags = 4
-	AxisFlagsNoTickLabels  AxisFlags = 8
-	AxisFlagsNoInitialFit  AxisFlags = 16
-	AxisFlagsNoMenus       AxisFlags = 32
-	AxisFlagsNoSideSwitch  AxisFlags = 64
-	AxisFlagsNoHighlight   AxisFlags = 128
-	AxisFlagsOpposite      AxisFlags = 256
-	AxisFlagsForeground    AxisFlags = 512
-	AxisFlagsInvert        AxisFlags = 1024
-	AxisFlagsAutoFit       AxisFlags = 2048
-	AxisFlagsRangeFit      AxisFlags = 4096
-	AxisFlagsPanStretch    AxisFlags = 8192
-	AxisFlagsLockMin       AxisFlags = 16384
+	// default
+	AxisFlagsNone AxisFlags = 0
+	// the axis label will not be displayed (axis labels are also hidden if the supplied string name is nullptr)
+	AxisFlagsNoLabel AxisFlags = 1
+	// no grid lines will be displayed
+	AxisFlagsNoGridLines AxisFlags = 2
+	// no tick marks will be displayed
+	AxisFlagsNoTickMarks AxisFlags = 4
+	// no text labels will be displayed
+	AxisFlagsNoTickLabels AxisFlags = 8
+	// axis will not be initially fit to data extents on the first rendered frame
+	AxisFlagsNoInitialFit AxisFlags = 16
+	// the user will not be able to open context menus with right-click
+	AxisFlagsNoMenus AxisFlags = 32
+	// the user will not be able to switch the axis side by dragging it
+	AxisFlagsNoSideSwitch AxisFlags = 64
+	// the axis will not have its background highlighted when hovered or held
+	AxisFlagsNoHighlight AxisFlags = 128
+	// axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)
+	AxisFlagsOpposite AxisFlags = 256
+	// grid lines will be displayed in the foreground (i.e. on top of data) instead of the background
+	AxisFlagsForeground AxisFlags = 512
+	// the axis will be inverted
+	AxisFlagsInvert AxisFlags = 1024
+	// axis will be auto-fitting to data extents
+	AxisFlagsAutoFit AxisFlags = 2048
+	// axis will only fit points if the point is in the visible range of the **orthogonal** axis
+	AxisFlagsRangeFit AxisFlags = 4096
+	// panning in a locked or constrained state will cause the axis to stretch if possible
+	AxisFlagsPanStretch AxisFlags = 8192
+	// the axis minimum value will be locked when panning/zooming
+	AxisFlagsLockMin AxisFlags = 16384
+	// the axis maximum value will be locked when panning/zooming
 	AxisFlagsLockMax       AxisFlags = 32768
 	AxisFlagsLock          AxisFlags = 49152
 	AxisFlagsNoDecorations AxisFlags = 15
 	AxisFlagsAuxDefault    AxisFlags = 258
 )
 
+// Flags for PlotBarGroups. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotBarGroupsFlags_
 type BarGroupsFlags int32
 
 const (
-	BarGroupsFlagsNone       BarGroupsFlags = 0
+	// default
+	BarGroupsFlagsNone BarGroupsFlags = 0
+	// bar groups will be rendered horizontally on the current y-axis
 	BarGroupsFlagsHorizontal BarGroupsFlags = 1024
-	BarGroupsFlagsStacked    BarGroupsFlags = 2048
+	// items in a group will be stacked on top of each other
+	BarGroupsFlagsStacked BarGroupsFlags = 2048
 )
 
+// Flags for PlotBars. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotBarsFlags_
 type BarsFlags int32
 
 const (
-	BarsFlagsNone       BarsFlags = 0
+	// default
+	BarsFlagsNone BarsFlags = 0
+	// bars will be rendered horizontally on the current y-axis
 	BarsFlagsHorizontal BarsFlags = 1024
 )
 
+// Enums for different automatic histogram binning methods (k = bin count or w = bin width)
 // original name: ImPlotBin_
 type Bin int32
 
 const (
-	BinSqrt    Bin = -1
+	// k = sqrt(n)
+	BinSqrt Bin = -1
+	// k = 1 + log2(n)
 	BinSturges Bin = -2
-	BinRice    Bin = -3
-	BinScott   Bin = -4
+	// k = 2 * cbrt(n)
+	BinRice Bin = -3
+	// w = 3.49 * sigma / cbrt(n)
+	BinScott Bin = -4
 )
 
+// Flags for PlotBubbles. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotBubblesFlags_
 type BubblesFlags int32
 
 const (
+	// default
 	BubblesFlagsNone BubblesFlags = 0
 )
 
+// Plot styling colors.
 // original name: ImPlotCol_
 type Col int32
 
 const (
-	ColFrameBg       Col = 0
-	ColPlotBg        Col = 1
-	ColPlotBorder    Col = 2
-	ColLegendBg      Col = 3
-	ColLegendBorder  Col = 4
-	ColLegendText    Col = 5
-	ColTitleText     Col = 6
-	ColInlayText     Col = 7
-	ColAxisText      Col = 8
-	ColAxisGrid      Col = 9
-	ColAxisTick      Col = 10
-	ColAxisBg        Col = 11
+	// plot frame background color (defaults to ImGuiCol_FrameBg)
+	ColFrameBg Col = 0
+	// plot area background color (defaults to ImGuiCol_WindowBg)
+	ColPlotBg Col = 1
+	// plot area border color (defaults to ImGuiCol_Border)
+	ColPlotBorder Col = 2
+	// legend background color (defaults to ImGuiCol_PopupBg)
+	ColLegendBg Col = 3
+	// legend border color (defaults to ImPlotCol_PlotBorder)
+	ColLegendBorder Col = 4
+	// legend text color (defaults to ImPlotCol_InlayText)
+	ColLegendText Col = 5
+	// plot title text color (defaults to ImGuiCol_Text)
+	ColTitleText Col = 6
+	// color of text appearing inside of plots (defaults to ImGuiCol_Text)
+	ColInlayText Col = 7
+	// axis label and tick labels color (defaults to ImGuiCol_Text)
+	ColAxisText Col = 8
+	// axis grid color (defaults to 25% ImPlotCol_AxisText)
+	ColAxisGrid Col = 9
+	// axis tick color (defaults to AxisGrid)
+	ColAxisTick Col = 10
+	// background color of axis hover region (defaults to transparent)
+	ColAxisBg Col = 11
+	// axis hover color (defaults to ImGuiCol_ButtonHovered)
 	ColAxisBgHovered Col = 12
-	ColAxisBgActive  Col = 13
-	ColSelection     Col = 14
-	ColCrosshairs    Col = 15
-	ColCOUNT         Col = 16
+	// axis active color (defaults to ImGuiCol_ButtonActive)
+	ColAxisBgActive Col = 13
+	// box-selection color (defaults to yellow)
+	ColSelection Col = 14
+	// crosshairs color (defaults to ImPlotCol_PlotBorder)
+	ColCrosshairs Col = 15
+	ColCOUNT      Col = 16
 )
 
+// Flags for ColormapScale
 // original name: ImPlotColormapScaleFlags_
 type ColormapScaleFlags int32
 
 const (
-	ColormapScaleFlagsNone     ColormapScaleFlags = 0
-	ColormapScaleFlagsNoLabel  ColormapScaleFlags = 1
+	// default
+	ColormapScaleFlagsNone ColormapScaleFlags = 0
+	// the colormap axis label will not be displayed
+	ColormapScaleFlagsNoLabel ColormapScaleFlags = 1
+	// render the colormap label and tick labels on the opposite side
 	ColormapScaleFlagsOpposite ColormapScaleFlags = 2
-	ColormapScaleFlagsInvert   ColormapScaleFlags = 4
+	// invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
+	ColormapScaleFlagsInvert ColormapScaleFlags = 4
 )
 
+// Built-in colormaps
 // original name: ImPlotColormap_
 type Colormap int32
 
 const (
-	ColormapDeep     Colormap = 0
-	ColormapDark     Colormap = 1
-	ColormapPastel   Colormap = 2
-	ColormapPaired   Colormap = 3
-	ColormapViridis  Colormap = 4
-	ColormapPlasma   Colormap = 5
-	ColormapHot      Colormap = 6
-	ColormapCool     Colormap = 7
-	ColormapPink     Colormap = 8
-	ColormapJet      Colormap = 9
+	// a.k.a. seaborn deep             (qual=true,  n=10) (default)
+	ColormapDeep Colormap = 0
+	// a.k.a. matplotlib "Set1"        (qual=true,  n=9 )
+	ColormapDark Colormap = 1
+	// a.k.a. matplotlib "Pastel1"     (qual=true,  n=9 )
+	ColormapPastel Colormap = 2
+	// a.k.a. matplotlib "Paired"      (qual=true,  n=12)
+	ColormapPaired Colormap = 3
+	// a.k.a. matplotlib "viridis"     (qual=false, n=11)
+	ColormapViridis Colormap = 4
+	// a.k.a. matplotlib "plasma"      (qual=false, n=11)
+	ColormapPlasma Colormap = 5
+	// a.k.a. matplotlib/MATLAB "hot"  (qual=false, n=11)
+	ColormapHot Colormap = 6
+	// a.k.a. matplotlib/MATLAB "cool" (qual=false, n=11)
+	ColormapCool Colormap = 7
+	// a.k.a. matplotlib/MATLAB "pink" (qual=false, n=11)
+	ColormapPink Colormap = 8
+	// a.k.a. MATLAB "jet"             (qual=false, n=11)
+	ColormapJet Colormap = 9
+	// a.k.a. matplotlib "twilight"    (qual=false, n=11)
 	ColormapTwilight Colormap = 10
-	ColormapRdBu     Colormap = 11
-	ColormapBrBG     Colormap = 12
-	ColormapPiYG     Colormap = 13
+	// red/blue, Color Brewer          (qual=false, n=11)
+	ColormapRdBu Colormap = 11
+	// brown/blue-green, Color Brewer  (qual=false, n=11)
+	ColormapBrBG Colormap = 12
+	// pink/yellow-green, Color Brewer (qual=false, n=11)
+	ColormapPiYG Colormap = 13
+	// color spectrum, Color Brewer    (qual=false, n=11)
 	ColormapSpectral Colormap = 14
-	ColormapGreys    Colormap = 15
+	// white/black                     (qual=false, n=2 )
+	ColormapGreys Colormap = 15
 )
 
+// Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)
 // original name: ImPlotCond_
 type Cond int32
 
 const (
-	CondNone   Cond = 0
+	// No condition (always set the variable), same as _Always
+	CondNone Cond = 0
+	// No condition (always set the variable)
 	CondAlways Cond = 1
-	CondOnce   Cond = 2
+	// Set the variable once per runtime session (only the first call will succeed)
+	CondOnce Cond = 2
 )
 
 // original name: ImPlotDateFmt_
 type DateFmt int32
 
 const (
-	DateFmtNone    DateFmt = 0
-	DateFmtDayMo   DateFmt = 1
+	DateFmtNone DateFmt = 0
+	// 10/3           [ --10-03      ]
+	DateFmtDayMo DateFmt = 1
+	// 10/3/91        [ 1991-10-03   ]
 	DateFmtDayMoYr DateFmt = 2
-	DateFmtMoYr    DateFmt = 3
-	DateFmtMo      DateFmt = 4
-	DateFmtYr      DateFmt = 5
+	// Oct 1991       [ 1991-10      ]
+	DateFmtMoYr DateFmt = 3
+	// Oct            [ --10         ]
+	DateFmtMo DateFmt = 4
+	// 1991           [ 1991         ]
+	DateFmtYr DateFmt = 5
 )
 
+// Flags for PlotDigital (placeholder). Used by setting ImPlotSpec::Flags.
 // original name: ImPlotDigitalFlags_
 type DigitalFlags int32
 
 const (
+	// default
 	DigitalFlagsNone DigitalFlags = 0
 )
 
+// Options for DragPoint, DragLine, DragRect
 // original name: ImPlotDragToolFlags_
 type DragToolFlags int32
 
 const (
-	DragToolFlagsNone      DragToolFlags = 0
+	// default
+	DragToolFlagsNone DragToolFlags = 0
+	// drag tools won't change cursor icons when hovered or held
 	DragToolFlagsNoCursors DragToolFlags = 1
-	DragToolFlagsNoFit     DragToolFlags = 2
-	DragToolFlagsNoInputs  DragToolFlags = 4
-	DragToolFlagsDelayed   DragToolFlags = 8
+	// the drag tool won't be considered for plot fits
+	DragToolFlagsNoFit DragToolFlags = 2
+	// lock the tool from user inputs
+	DragToolFlagsNoInputs DragToolFlags = 4
+	// tool rendering will be delayed one frame; useful when applying position-constraints
+	DragToolFlagsDelayed DragToolFlags = 8
 )
 
+// Flags for PlotDummy (placeholder). Used by setting ImPlotSpec::Flags.
 // original name: ImPlotDummyFlags_
 type DummyFlags int32
 
 const (
+	// default
 	DummyFlagsNone DummyFlags = 0
 )
 
+// Flags for PlotErrorBars. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotErrorBarsFlags_
 type ErrorBarsFlags int32
 
 const (
-	ErrorBarsFlagsNone       ErrorBarsFlags = 0
+	// default
+	ErrorBarsFlagsNone ErrorBarsFlags = 0
+	// error bars will be rendered horizontally on the current y-axis
 	ErrorBarsFlagsHorizontal ErrorBarsFlags = 1024
 )
 
+// Options for plots (see BeginPlot).
 // original name: ImPlotFlags_
 type Flags int32
 
 const (
-	FlagsNone        Flags = 0
-	FlagsNoTitle     Flags = 1
-	FlagsNoLegend    Flags = 2
+	// default
+	FlagsNone Flags = 0
+	// the plot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. "##MyPlot")
+	FlagsNoTitle Flags = 1
+	// the legend will not be displayed
+	FlagsNoLegend Flags = 2
+	// the mouse position, in plot coordinates, will not be displayed inside of the plot
 	FlagsNoMouseText Flags = 4
-	FlagsNoInputs    Flags = 8
-	FlagsNoMenus     Flags = 16
+	// the user will not be able to interact with the plot
+	FlagsNoInputs Flags = 8
+	// the user will not be able to open context menus
+	FlagsNoMenus Flags = 16
+	// the user will not be able to box-select
 	FlagsNoBoxSelect Flags = 32
-	FlagsNoFrame     Flags = 64
-	FlagsEqual       Flags = 128
-	FlagsCrosshairs  Flags = 256
-	FlagsCanvasOnly  Flags = 55
+	// the ImGui frame will not be rendered
+	FlagsNoFrame Flags = 64
+	// x and y axes pairs will be constrained to have the same units/pixel
+	FlagsEqual Flags = 128
+	// the default mouse cursor will be replaced with a crosshair when hovered
+	FlagsCrosshairs Flags = 256
+	FlagsCanvasOnly Flags = 55
 )
 
+// Flags for PlotHeatmap. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotHeatmapFlags_
 type HeatmapFlags int32
 
 const (
-	HeatmapFlagsNone     HeatmapFlags = 0
+	// default
+	HeatmapFlagsNone HeatmapFlags = 0
+	// data will be read in column major order
 	HeatmapFlagsColMajor HeatmapFlags = 1024
 )
 
+// Flags for PlotHistogram and PlotHistogram2D. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotHistogramFlags_
 type HistogramFlags int32
 
 const (
-	HistogramFlagsNone       HistogramFlags = 0
+	// default
+	HistogramFlagsNone HistogramFlags = 0
+	// histogram bars will be rendered horizontally (not supported by PlotHistogram2D)
 	HistogramFlagsHorizontal HistogramFlags = 1024
+	// each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)
 	HistogramFlagsCumulative HistogramFlags = 2048
-	HistogramFlagsDensity    HistogramFlags = 4096
+	// counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set
+	HistogramFlagsDensity HistogramFlags = 4096
+	// exclude values outside the specified histogram range from the count toward normalizing and cumulative counts
 	HistogramFlagsNoOutliers HistogramFlags = 8192
-	HistogramFlagsColMajor   HistogramFlags = 16384
+	// data will be read in column major order (not supported by PlotHistogram)
+	HistogramFlagsColMajor HistogramFlags = 16384
 )
 
+// Flags for PlotImage (placeholder). Used by setting ImPlotSpec::Flags.
 // original name: ImPlotImageFlags_
 type ImageFlags int32
 
 const (
+	// default
 	ImageFlagsNone ImageFlags = 0
 )
 
+// Flags for PlotInfLines. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotInfLinesFlags_
 type InfLinesFlags int32
 
 const (
-	InfLinesFlagsNone       InfLinesFlags = 0
+	// default
+	InfLinesFlagsNone InfLinesFlags = 0
+	// lines will be rendered horizontally on the current y-axis
 	InfLinesFlagsHorizontal InfLinesFlags = 1024
 )
 
+// Flags for ANY PlotX function. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotItemFlags_
 type ItemFlags int32
 
 const (
-	ItemFlagsNone     ItemFlags = 0
+	ItemFlagsNone ItemFlags = 0
+	// the item won't have a legend entry displayed
 	ItemFlagsNoLegend ItemFlags = 1
-	ItemFlagsNoFit    ItemFlags = 2
+	// the item won't be considered for plot fits
+	ItemFlagsNoFit ItemFlags = 2
 )
 
+// Options for legends (see SetupLegend)
 // original name: ImPlotLegendFlags_
 type LegendFlags int32
 
 const (
-	LegendFlagsNone            LegendFlags = 0
-	LegendFlagsNoButtons       LegendFlags = 1
+	// default
+	LegendFlagsNone LegendFlags = 0
+	// legend icons will not function as hide/show buttons
+	LegendFlagsNoButtons LegendFlags = 1
+	// plot items will not be highlighted when their legend entry is hovered
 	LegendFlagsNoHighlightItem LegendFlags = 2
+	// axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)
 	LegendFlagsNoHighlightAxis LegendFlags = 4
-	LegendFlagsNoMenus         LegendFlags = 8
-	LegendFlagsOutside         LegendFlags = 16
-	LegendFlagsHorizontal      LegendFlags = 32
-	LegendFlagsSort            LegendFlags = 64
-	LegendFlagsReverse         LegendFlags = 128
+	// the user will not be able to open context menus with right-click
+	LegendFlagsNoMenus LegendFlags = 8
+	// legend will be rendered outside of the plot area
+	LegendFlagsOutside LegendFlags = 16
+	// legend entries will be displayed horizontally
+	LegendFlagsHorizontal LegendFlags = 32
+	// legend entries will be displayed in alphabetical order
+	LegendFlagsSort LegendFlags = 64
+	// legend entries will be displayed in reverse order
+	LegendFlagsReverse LegendFlags = 128
 )
 
+// Flags for PlotLine. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotLineFlags_
 type LineFlags int32
 
 const (
-	LineFlagsNone     LineFlags = 0
+	// default
+	LineFlagsNone LineFlags = 0
+	// a line segment will be rendered from every two consecutive points
 	LineFlagsSegments LineFlags = 1024
-	LineFlagsLoop     LineFlags = 2048
-	LineFlagsSkipNaN  LineFlags = 4096
-	LineFlagsNoClip   LineFlags = 8192
-	LineFlagsShaded   LineFlags = 16384
+	// the last and first point will be connected to form a closed loop
+	LineFlagsLoop LineFlags = 2048
+	// NaNs values will be skipped instead of rendered as missing data
+	LineFlagsSkipNaN LineFlags = 4096
+	// markers (if displayed) on the edge of a plot will not be clipped
+	LineFlagsNoClip LineFlags = 8192
+	// a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
+	LineFlagsShaded LineFlags = 16384
 )
 
+// Used to position items on a plot (e.g. legends, labels, etc.)
 // original name: ImPlotLocation_
 type Location int32
 
 const (
-	LocationCenter    Location = 0
-	LocationNorth     Location = 1
-	LocationSouth     Location = 2
-	LocationWest      Location = 4
-	LocationEast      Location = 8
+	// center-center
+	LocationCenter Location = 0
+	// top-center
+	LocationNorth Location = 1
+	// bottom-center
+	LocationSouth Location = 2
+	// center-left
+	LocationWest Location = 4
+	// center-right
+	LocationEast Location = 8
+	// top-left
 	LocationNorthWest Location = 5
+	// top-right
 	LocationNorthEast Location = 9
+	// bottom-left
 	LocationSouthWest Location = 6
+	// bottom-right
 	LocationSouthEast Location = 10
 )
 
@@ -295,169 +451,272 @@ const (
 	MarkerInvalid MarkerInternal = -3
 )
 
+// Marker specifications.
 // original name: ImPlotMarker_
 type Marker int32
 
 const (
-	MarkerNone     Marker = -2
-	MarkerAuto     Marker = -1
-	MarkerCircle   Marker = 0
-	MarkerSquare   Marker = 1
-	MarkerDiamond  Marker = 2
-	MarkerUp       Marker = 3
-	MarkerDown     Marker = 4
-	MarkerLeft     Marker = 5
-	MarkerRight    Marker = 6
-	MarkerCross    Marker = 7
-	MarkerPlus     Marker = 8
+	// no marker
+	MarkerNone Marker = -2
+	// automatic marker selection
+	MarkerAuto Marker = -1
+	// a circle marker (default)
+	MarkerCircle Marker = 0
+	// a square maker
+	MarkerSquare Marker = 1
+	// a diamond marker
+	MarkerDiamond Marker = 2
+	// an upward-pointing triangle marker
+	MarkerUp Marker = 3
+	// an downward-pointing triangle marker
+	MarkerDown Marker = 4
+	// an leftward-pointing triangle marker
+	MarkerLeft Marker = 5
+	// an rightward-pointing triangle marker
+	MarkerRight Marker = 6
+	// a cross marker (not fill-able)
+	MarkerCross Marker = 7
+	// a plus marker (not fill-able)
+	MarkerPlus Marker = 8
+	// a asterisk marker (not fill-able)
 	MarkerAsterisk Marker = 9
-	MarkerCOUNT    Marker = 10
+	// a vertical line marker (not fill-able)
+	MarkerVertical Marker = 10
+	// a horizontal line marker (not fill-able)
+	MarkerHorizontal Marker = 11
+	MarkerCOUNT      Marker = 12
 )
 
+// Options for mouse hover text (see SetupMouseText)
 // original name: ImPlotMouseTextFlags_
 type MouseTextFlags int32
 
 const (
-	MouseTextFlagsNone       MouseTextFlags = 0
-	MouseTextFlagsNoAuxAxes  MouseTextFlags = 1
-	MouseTextFlagsNoFormat   MouseTextFlags = 2
+	// default
+	MouseTextFlagsNone MouseTextFlags = 0
+	// only show the mouse position for primary axes
+	MouseTextFlagsNoAuxAxes MouseTextFlags = 1
+	// axes label formatters won't be used to render text
+	MouseTextFlagsNoFormat MouseTextFlags = 2
+	// always display mouse position even if plot not hovered
 	MouseTextFlagsShowAlways MouseTextFlags = 4
 )
 
+// Flags for PlotPieChart. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotPieChartFlags_
 type PieChartFlags int32
 
 const (
-	PieChartFlagsNone          PieChartFlags = 0
-	PieChartFlagsNormalize     PieChartFlags = 1024
-	PieChartFlagsIgnoreHidden  PieChartFlags = 2048
-	PieChartFlagsExploding     PieChartFlags = 4096
+	// default
+	PieChartFlagsNone PieChartFlags = 0
+	// force normalization of pie chart values (i.e. always make a full circle if sum < 0)
+	PieChartFlagsNormalize PieChartFlags = 1024
+	// ignore hidden slices when drawing the pie chart (as if they were not there)
+	PieChartFlagsIgnoreHidden PieChartFlags = 2048
+	// explode legend-hovered slice
+	PieChartFlagsExploding PieChartFlags = 4096
+	// do not draw slice borders
 	PieChartFlagsNoSliceBorder PieChartFlags = 8192
 )
 
+// Flags for PlotPolygon. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotPolygonFlags_
 type PolygonFlags int32
 
 const (
-	PolygonFlagsNone    PolygonFlags = 0
+	// default (closed, convex polygon)
+	PolygonFlagsNone PolygonFlags = 0
+	// use concave polygon filling (slower but supports concave shapes)
 	PolygonFlagsConcave PolygonFlags = 1024
 )
 
+// Plotting properties. These provide syntactic sugar for creating ImPlotSpecs from (ImPlotProp,value) pairs. See ImPlotSpec documentation.
 // original name: ImPlotProp_
 type Prop int32
 
 const (
-	PropLineColor        Prop = 0
-	PropLineColors       Prop = 1
-	PropLineWeight       Prop = 2
-	PropFillColor        Prop = 3
-	PropFillColors       Prop = 4
-	PropFillAlpha        Prop = 5
-	PropMarker           Prop = 6
-	PropMarkerSize       Prop = 7
-	PropMarkerSizes      Prop = 8
-	PropMarkerLineColor  Prop = 9
+	// line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color
+	PropLineColor Prop = 0
+	// array of colors for each line; if nullptr, use LineColor for all lines
+	PropLineColors Prop = 1
+	// line weight in pixels (applies to lines, bar edges, marker edges)
+	PropLineWeight Prop = 2
+	// fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color
+	PropFillColor Prop = 3
+	// array of colors for each fill; if nullptr, use FillColor for all fills
+	PropFillColors Prop = 4
+	// alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)
+	PropFillAlpha Prop = 5
+	// marker type; specify ImPlotMarker_Auto to use the next unused marker
+	PropMarker Prop = 6
+	// size of markers (radius) *in pixels*
+	PropMarkerSize Prop = 7
+	// array of sizes for each marker; if nullptr, use MarkerSize for all markers
+	PropMarkerSizes Prop = 8
+	// marker edge color; IMPLOT_AUTO_COL will use LineColor
+	PropMarkerLineColor Prop = 9
+	// array of colors for each marker edge; if nullptr, use MarkerLineColor for all markers
 	PropMarkerLineColors Prop = 10
-	PropMarkerFillColor  Prop = 11
+	// marker face color; IMPLOT_AUTO_COL will use LineColor
+	PropMarkerFillColor Prop = 11
+	// array of colors for each marker face; if nullptr, use MarkerFillColor for all markers
 	PropMarkerFillColors Prop = 12
-	PropSize             Prop = 13
-	PropOffset           Prop = 14
-	PropStride           Prop = 15
-	PropFlags            Prop = 16
+	// size of error bar whiskers (width or height), and digital bars (height) *in pixels*
+	PropSize Prop = 13
+	// data index offset
+	PropOffset Prop = 14
+	// data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX
+	PropStride Prop = 15
+	// optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags
+	PropFlags Prop = 16
 )
 
+// Axis scale
 // original name: ImPlotScale_
 type Scale int32
 
 const (
+	// default linear scale
 	ScaleLinear Scale = 0
-	ScaleTime   Scale = 1
-	ScaleLog10  Scale = 2
+	// date/time scale
+	ScaleTime Scale = 1
+	// base 10 logarithmic scale
+	ScaleLog10 Scale = 2
+	// symmetric log scale
 	ScaleSymLog Scale = 3
 )
 
+// Flags for PlotScatter. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotScatterFlags_
 type ScatterFlags int32
 
 const (
-	ScatterFlagsNone   ScatterFlags = 0
+	// default
+	ScatterFlagsNone ScatterFlags = 0
+	// markers on the edge of a plot will not be clipped
 	ScatterFlagsNoClip ScatterFlags = 1024
 )
 
+// Flags for PlotShaded (placeholder). Used by setting ImPlotSpec::Flags.
 // original name: ImPlotShadedFlags_
 type ShadedFlags int32
 
 const (
+	// default
 	ShadedFlagsNone ShadedFlags = 0
 )
 
+// Flags for PlotStairs. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotStairsFlags_
 type StairsFlags int32
 
 const (
-	StairsFlagsNone    StairsFlags = 0
+	// default
+	StairsFlagsNone StairsFlags = 0
+	// the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]
 	StairsFlagsPreStep StairsFlags = 1024
-	StairsFlagsShaded  StairsFlags = 2048
+	// a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
+	StairsFlagsShaded StairsFlags = 2048
 )
 
+// Flags for PlotStems. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotStemsFlags_
 type StemsFlags int32
 
 const (
-	StemsFlagsNone       StemsFlags = 0
+	// default
+	StemsFlagsNone StemsFlags = 0
+	// stems will be rendered horizontally on the current y-axis
 	StemsFlagsHorizontal StemsFlags = 1024
 )
 
+// Plot styling variables.
 // original name: ImPlotStyleVar_
 type StyleVar int32
 
 const (
-	StyleVarPlotDefaultSize    StyleVar = 0
-	StyleVarPlotMinSize        StyleVar = 1
-	StyleVarPlotBorderSize     StyleVar = 2
-	StyleVarMinorAlpha         StyleVar = 3
-	StyleVarMajorTickLen       StyleVar = 4
-	StyleVarMinorTickLen       StyleVar = 5
-	StyleVarMajorTickSize      StyleVar = 6
-	StyleVarMinorTickSize      StyleVar = 7
-	StyleVarMajorGridSize      StyleVar = 8
-	StyleVarMinorGridSize      StyleVar = 9
-	StyleVarPlotPadding        StyleVar = 10
-	StyleVarLabelPadding       StyleVar = 11
-	StyleVarLegendPadding      StyleVar = 12
+	// ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot
+	StyleVarPlotDefaultSize StyleVar = 0
+	// ImVec2, minimum size plot frame can be when shrunk
+	StyleVarPlotMinSize StyleVar = 1
+	// float,  thickness of border around plot area
+	StyleVarPlotBorderSize StyleVar = 2
+	// float,  alpha multiplier applied to minor axis grid lines
+	StyleVarMinorAlpha StyleVar = 3
+	// ImVec2, major tick lengths for X and Y axes
+	StyleVarMajorTickLen StyleVar = 4
+	// ImVec2, minor tick lengths for X and Y axes
+	StyleVarMinorTickLen StyleVar = 5
+	// ImVec2, line thickness of major ticks
+	StyleVarMajorTickSize StyleVar = 6
+	// ImVec2, line thickness of minor ticks
+	StyleVarMinorTickSize StyleVar = 7
+	// ImVec2, line thickness of major grid lines
+	StyleVarMajorGridSize StyleVar = 8
+	// ImVec2, line thickness of minor grid lines
+	StyleVarMinorGridSize StyleVar = 9
+	// ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+	StyleVarPlotPadding StyleVar = 10
+	// ImVec2, padding between axes labels, tick labels, and plot edge
+	StyleVarLabelPadding StyleVar = 11
+	// ImVec2, legend padding from plot edges
+	StyleVarLegendPadding StyleVar = 12
+	// ImVec2, legend inner padding from legend edges
 	StyleVarLegendInnerPadding StyleVar = 13
-	StyleVarLegendSpacing      StyleVar = 14
-	StyleVarMousePosPadding    StyleVar = 15
-	StyleVarAnnotationPadding  StyleVar = 16
-	StyleVarFitPadding         StyleVar = 17
-	StyleVarDigitalPadding     StyleVar = 18
-	StyleVarDigitalSpacing     StyleVar = 19
-	StyleVarCOUNT              StyleVar = 20
+	// ImVec2, spacing between legend entries
+	StyleVarLegendSpacing StyleVar = 14
+	// ImVec2, padding between plot edge and interior info text
+	StyleVarMousePosPadding StyleVar = 15
+	// ImVec2, text padding around annotation labels
+	StyleVarAnnotationPadding StyleVar = 16
+	// ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)
+	StyleVarFitPadding StyleVar = 17
+	// float,  digital plot padding from bottom in pixels
+	StyleVarDigitalPadding StyleVar = 18
+	// float,  digital plot spacing gap in pixels
+	StyleVarDigitalSpacing StyleVar = 19
+	StyleVarCOUNT          StyleVar = 20
 )
 
+// Options for subplots (see BeginSubplot)
 // original name: ImPlotSubplotFlags_
 type SubplotFlags int32
 
 const (
-	SubplotFlagsNone       SubplotFlags = 0
-	SubplotFlagsNoTitle    SubplotFlags = 1
-	SubplotFlagsNoLegend   SubplotFlags = 2
-	SubplotFlagsNoMenus    SubplotFlags = 4
-	SubplotFlagsNoResize   SubplotFlags = 8
-	SubplotFlagsNoAlign    SubplotFlags = 16
+	// default
+	SubplotFlagsNone SubplotFlags = 0
+	// the subplot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. "##MySubplot")
+	SubplotFlagsNoTitle SubplotFlags = 1
+	// the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)
+	SubplotFlagsNoLegend SubplotFlags = 2
+	// the user will not be able to open context menus with right-click
+	SubplotFlagsNoMenus SubplotFlags = 4
+	// resize splitters between subplot cells will be not be provided
+	SubplotFlagsNoResize SubplotFlags = 8
+	// subplot edges will not be aligned vertically or horizontally
+	SubplotFlagsNoAlign SubplotFlags = 16
+	// items across all subplots will be shared and rendered into a single legend entry
 	SubplotFlagsShareItems SubplotFlags = 32
-	SubplotFlagsLinkRows   SubplotFlags = 64
-	SubplotFlagsLinkCols   SubplotFlags = 128
-	SubplotFlagsLinkAllX   SubplotFlags = 256
-	SubplotFlagsLinkAllY   SubplotFlags = 512
-	SubplotFlagsColMajor   SubplotFlags = 1024
+	// link the y-axis limits of all plots in each row (does not apply to auxiliary axes)
+	SubplotFlagsLinkRows SubplotFlags = 64
+	// link the x-axis limits of all plots in each column (does not apply to auxiliary axes)
+	SubplotFlagsLinkCols SubplotFlags = 128
+	// link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)
+	SubplotFlagsLinkAllX SubplotFlags = 256
+	// link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)
+	SubplotFlagsLinkAllY SubplotFlags = 512
+	// subplots are added in column major order instead of the default row major order
+	SubplotFlagsColMajor SubplotFlags = 1024
 )
 
+// Flags for PlotText. Used by setting ImPlotSpec::Flags.
 // original name: ImPlotTextFlags_
 type TextFlags int32
 
 const (
-	TextFlagsNone     TextFlags = 0
+	// default
+	TextFlagsNone TextFlags = 0
+	// text will be rendered vertically
 	TextFlagsVertical TextFlags = 1024
 )
 
@@ -465,29 +724,46 @@ const (
 type TimeFmt int32
 
 const (
-	TimeFmtNone     TimeFmt = 0
-	TimeFmtUs       TimeFmt = 1
-	TimeFmtSUs      TimeFmt = 2
-	TimeFmtSMs      TimeFmt = 3
-	TimeFmtS        TimeFmt = 4
-	TimeFmtMinSMs   TimeFmt = 5
+	TimeFmtNone TimeFmt = 0
+	// .428 552       [ .428 552     ]
+	TimeFmtUs TimeFmt = 1
+	// :29.428 552    [ :29.428 552  ]
+	TimeFmtSUs TimeFmt = 2
+	// :29.428        [ :29.428      ]
+	TimeFmtSMs TimeFmt = 3
+	// :29            [ :29          ]
+	TimeFmtS TimeFmt = 4
+	// 21:29.428      [ 21:29.428    ]
+	TimeFmtMinSMs TimeFmt = 5
+	// 7:21:29.428pm  [ 19:21:29.428 ]
 	TimeFmtHrMinSMs TimeFmt = 6
-	TimeFmtHrMinS   TimeFmt = 7
-	TimeFmtHrMin    TimeFmt = 8
-	TimeFmtHr       TimeFmt = 9
+	// 7:21:29pm      [ 19:21:29     ]
+	TimeFmtHrMinS TimeFmt = 7
+	// 7:21pm         [ 19:21        ]
+	TimeFmtHrMin TimeFmt = 8
+	// 7pm            [ 19:00        ]
+	TimeFmtHr TimeFmt = 9
 )
 
 // original name: ImPlotTimeUnit_
 type TimeUnit int32
 
 const (
-	TimeUnitUs    TimeUnit = 0
-	TimeUnitMs    TimeUnit = 1
-	TimeUnitS     TimeUnit = 2
-	TimeUnitMin   TimeUnit = 3
-	TimeUnitHr    TimeUnit = 4
-	TimeUnitDay   TimeUnit = 5
-	TimeUnitMo    TimeUnit = 6
+	// microsecond
+	TimeUnitUs TimeUnit = 0
+	// millisecond
+	TimeUnitMs TimeUnit = 1
+	// second
+	TimeUnitS TimeUnit = 2
+	// minute
+	TimeUnitMin TimeUnit = 3
+	// hour
+	TimeUnitHr TimeUnit = 4
+	// day
+	TimeUnitDay TimeUnit = 5
+	// month
+	TimeUnitMo TimeUnit = 6
+	// year
 	TimeUnitYr    TimeUnit = 7
 	TimeUnitCOUNT TimeUnit = 8
 )

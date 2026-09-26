@@ -3,38 +3,60 @@
 
 package ImGuiColorTextEdit
 
-// original name: LanguageDefinitionId
-type LanguageDefinitionId int32
+// original name: BreakOption
+type BreakOption int32
 
 const (
-	None        LanguageDefinitionId = 0
-	Cpp         LanguageDefinitionId = 1
-	C           LanguageDefinitionId = 2
-	Cs          LanguageDefinitionId = 3
-	Python      LanguageDefinitionId = 4
-	Lua         LanguageDefinitionId = 5
-	Json        LanguageDefinitionId = 6
-	Sql         LanguageDefinitionId = 7
-	AngelScript LanguageDefinitionId = 8
-	Glsl        LanguageDefinitionId = 9
-	Hlsl        LanguageDefinitionId = 10
+	MustBreak  BreakOption = 0
+	AllowBreak BreakOption = 1
+	NoBreak    BreakOption = 2
+	Undefined  BreakOption = 3
 )
 
-// original name: PaletteId
-type PaletteId int32
+// original name: Color
+type Color int32
 
 const (
-	Dark      PaletteId = 0
-	Light     PaletteId = 1
-	Mariana   PaletteId = 2
-	RetroBlue PaletteId = 3
+	Text                      Color = 0
+	Keyword                   Color = 1
+	Declaration               Color = 2
+	Number                    Color = 3
+	String                    Color = 4
+	Punctuation               Color = 5
+	Preprocessor              Color = 6
+	Identifier                Color = 7
+	KnownIdentifier           Color = 8
+	Comment                   Color = 9
+	Background                Color = 10
+	Cursor                    Color = 11
+	Selection                 Color = 12
+	Whitespace                Color = 13
+	MatchingBracketBackground Color = 14
+	MatchingBracketActive     Color = 15
+	MatchingBracketLevel1     Color = 16
+	MatchingBracketLevel2     Color = 17
+	MatchingBracketLevel3     Color = 18
+	MatchingBracketError      Color = 19
+	LineNumber                Color = 20
+	CurrentLineNumber         Color = 21
+	Count                     Color = 22
 )
 
-// original name: SetViewAtLineMode
-type SetViewAtLineMode int32
+// original name: Scroll
+type Scroll int32
 
 const (
-	FirstVisibleLine SetViewAtLineMode = 0
-	Centered         SetViewAtLineMode = 1
-	LastVisibleLine  SetViewAtLineMode = 2
+	AlignTop    Scroll = 0
+	AlignMiddle Scroll = 1
+	AlignBottom Scroll = 2
+)
+
+// original name: Type
+type Type int32
+
+const (
+	Success Type = 0
+	Warning Type = 1
+	Error   Type = 2
+	Info    Type = 3
 )

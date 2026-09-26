@@ -6,3 +6,37 @@
 #include "wrapper.h"
 #include "structs_accessor.h"
 
+void wrap_Decorator_SetLine(Decorator *DecoratorPtr, size_t v) { DecoratorPtr->line = v; }
+void wrap_Decorator_SetWidth(Decorator *DecoratorPtr, float v) { DecoratorPtr->width = v; }
+void wrap_Decorator_SetHeight(Decorator *DecoratorPtr, float v) { DecoratorPtr->height = v; }
+void wrap_Decorator_SetGlyphSize(Decorator *DecoratorPtr, ImVec2 v) { DecoratorPtr->glyphSize = v; }
+void wrap_Decorator_SetUserData(Decorator *DecoratorPtr, uintptr_t v) { DecoratorPtr->userData = (void*)v; }
+size_t wrap_Decorator_GetLine(Decorator *self) { return self->line; }
+float wrap_Decorator_GetWidth(Decorator *self) { return self->width; }
+float wrap_Decorator_GetHeight(Decorator *self) { return self->height; }
+ImVec2 wrap_Decorator_GetGlyphSize(Decorator *self) { return self->glyphSize; }
+uintptr_t wrap_Decorator_GetUserData(Decorator *self) { return (uintptr_t)self->userData; }
+void wrap_DocPos_SetLine(DocPos *DocPosPtr, size_t v) { DocPosPtr->line = v; }
+void wrap_DocPos_SetIndex(DocPos *DocPosPtr, size_t v) { DocPosPtr->index = v; }
+size_t wrap_DocPos_GetLine(DocPos *self) { return self->line; }
+size_t wrap_DocPos_GetIndex(DocPos *self) { return self->index; }
+void wrap_DocSelection_SetStart(DocSelection *DocSelectionPtr, DocPos v) { DocSelectionPtr->start = v; }
+void wrap_DocSelection_SetEnd(DocSelection *DocSelectionPtr, DocPos v) { DocSelectionPtr->end = v; }
+DocPos_c wrap_DocSelection_GetStart(DocSelection *self) { return self->start; }
+DocPos_c wrap_DocSelection_GetEnd(DocSelection *self) { return self->end; }
+void wrap_Glyph_SetCodepoint(Glyph *GlyphPtr, ImWchar v) { GlyphPtr->codepoint = v; }
+void wrap_Glyph_SetColor(Glyph *GlyphPtr, Color v) { GlyphPtr->color = v; }
+void wrap_Glyph_SetBreakOption(Glyph *GlyphPtr, BreakOption v) { GlyphPtr->breakOption = v; }
+void wrap_Glyph_SetSquiggle(Glyph *GlyphPtr, size_t v) { GlyphPtr->squiggle = v; }
+ImWchar wrap_Glyph_GetCodepoint(Glyph *self) { return self->codepoint; }
+Color wrap_Glyph_GetColor(Glyph *self) { return self->color; }
+BreakOption wrap_Glyph_GetBreakOption(Glyph *self) { return self->breakOption; }
+size_t wrap_Glyph_GetSquiggle(Glyph *self) { return self->squiggle; }
+void wrap_PopupData_SetPos(PopupData *PopupDataPtr, DocPos v) { PopupDataPtr->pos = v; }
+void wrap_PopupData_SetUserData(PopupData *PopupDataPtr, uintptr_t v) { PopupDataPtr->userData = (void*)v; }
+DocPos_c wrap_PopupData_GetPos(PopupData *self) { return self->pos; }
+uintptr_t wrap_PopupData_GetUserData(PopupData *self) { return (uintptr_t)self->userData; }
+void wrap_VisPos_SetRow(VisPos *VisPosPtr, size_t v) { VisPosPtr->row = v; }
+void wrap_VisPos_SetColumn(VisPos *VisPosPtr, size_t v) { VisPosPtr->column = v; }
+size_t wrap_VisPos_GetRow(VisPos *self) { return self->row; }
+size_t wrap_VisPos_GetColumn(VisPos *self) { return self->column; }

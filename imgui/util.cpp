@@ -14,7 +14,7 @@ void wrap_GetVertexBufferLayout(size_t *entrySize, size_t *posOffset, size_t *uv
 }
 
 ImDrawList *wrap_DrawData_GetDrawListAt(ImDrawData *self, int idx) {
-  if (idx >= 0 && idx < self->CmdListsCount)
+  if (idx >= 0 && idx < self->CmdLists.Size)
     return self->CmdLists.Data[idx];
 
   return NULL;

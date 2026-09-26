@@ -34,6 +34,12 @@ type Preset struct {
 	TypedefsPoolSize int
 	// TypedefsCustomPoolSizes allows to override TypedefsPoolSize for certain types.
 	TypedefsCustomPoolSizes map[CIdentifier]int
+	// ExtendedArgsSuffix is a special string added to the function signature when default arguments values are defined.
+	ExtendedArgsSuffix string
+	// ExtendedArgsSuffixReplace is a map of CIdentifier -> string.
+	// When CIdentifier is present in this map, and it has default args defined,
+	// the corresponding string will be used instead of ExtendedArgsSuffix.
+	ExtendedArgsSuffixReplace map[CIdentifier]string
 	// Replace is a map for C -> Go names conversion.
 	// It allows you to force-rename anything (including functions and enums)
 	// With Replace all further processing will be skipped (prefix, e.t.c.)

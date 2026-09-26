@@ -20,7 +20,7 @@ uintptr_t wrap_ImGuiStorage_GetVoidPtr(ImGuiStorage* self,ImGuiID key) { return 
 void** wrap_ImGuiStorage_GetVoidPtrRefV(ImGuiStorage* self,ImGuiID key,uintptr_t default_val) { return ImGuiStorage_GetVoidPtrRef(self,key,(void*)(uintptr_t)default_val); }
 void wrap_ImGuiStorage_SetVoidPtr(ImGuiStorage* self,ImGuiID key,uintptr_t val) { ImGuiStorage_SetVoidPtr(self,key,(void*)(uintptr_t)val); }
 uintptr_t wrap_ImGuiStyleVarInfo_GetVarPtr(ImGuiStyleVarInfo* self,uintptr_t parent) { return (uintptr_t)ImGuiStyleVarInfo_GetVarPtr(self,(void*)(uintptr_t)parent); }
-void wrap_ImGuiTextBuffer_appendf(ImGuiTextBuffer* self, const char* fmt) { ImGuiTextBuffer_appendf(self,fmt); }
+void wrap_ImGuiTextBuffer_appendf(ImGuiTextBuffer* self,const char* fmt) { ImGuiTextBuffer_appendf(self,fmt); }
 bool wrap_ImGuiTextFilter_PassFilterV(ImGuiTextFilter* self,const char* text,const int text_len) { return ImGuiTextFilter_PassFilter(self,text,(text_len > 0) ? text + text_len*sizeof(char) : 0); }
 ImGuiID wrap_ImGuiWindow_GetID_Ptr(ImGuiWindow* self,const uintptr_t ptr) { return ImGuiWindow_GetID_Ptr(self,(const void*)(uintptr_t)ptr); }
 uintptr_t wrap_ImTextureData_GetPixels(ImTextureData* self) { return (uintptr_t)ImTextureData_GetPixels(self); }
@@ -95,8 +95,10 @@ void wrap_igTextExV(const char* text,const int text_len,ImGuiTextFlags flags) { 
 void wrap_igTextUnformattedV(const char* text,const int text_len) { igTextUnformatted(text,(text_len > 0) ? text + text_len*sizeof(char) : 0); }
 void wrap_igTextWrapped(const char* fmt) { igTextWrapped(fmt); }
 bool wrap_igTreeNodeEx_Ptr(const uintptr_t ptr_id,ImGuiTreeNodeFlags flags,const char* fmt) { return igTreeNodeEx_Ptr((const void*)(uintptr_t)ptr_id,flags,fmt); }
+bool wrap_igTreeNodeEx_Ptr0(const uintptr_t ptr_id,ImGuiTreeNodeFlags flags,const char* fmt) { return igTreeNodeEx_Ptr0((const void*)(uintptr_t)ptr_id,flags,fmt); }
 bool wrap_igTreeNodeEx_StrStr(const char* str_id,ImGuiTreeNodeFlags flags,const char* fmt) { return igTreeNodeEx_StrStr(str_id,flags,fmt); }
 bool wrap_igTreeNode_Ptr(const uintptr_t ptr_id,const char* fmt) { return igTreeNode_Ptr((const void*)(uintptr_t)ptr_id,fmt); }
+bool wrap_igTreeNode_Ptr0(const uintptr_t ptr_id,const char* fmt) { return igTreeNode_Ptr0((const void*)(uintptr_t)ptr_id,fmt); }
 bool wrap_igTreeNode_StrStr(const char* str_id,const char* fmt) { return igTreeNode_StrStr(str_id,fmt); }
 void wrap_igTreePush_Ptr(const uintptr_t ptr_id) { igTreePush_Ptr((const void*)(uintptr_t)ptr_id); }
 int wrap_igTypingSelectFindBestLeadingMatch(ImGuiTypingSelectRequest* req,int items_count,const char*(*get_item_name_func)(void*,int),uintptr_t user_data) { return igTypingSelectFindBestLeadingMatch(req,items_count,get_item_name_func,(void*)(uintptr_t)user_data); }
@@ -107,7 +109,7 @@ ImColor_c wrap_ImColor_HSV(float h,float s,float v) { return ImColor_HSV(h,s,v,1
 void wrap_ImColor_SetHSV(ImColor* self,float h,float s,float v) { ImColor_SetHSV(self,h,s,v,1.0f); }
 void wrap_ImDrawList_AddBezierCubic(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,ImU32 col,float thickness) { ImDrawList_AddBezierCubic(self,p1,p2,p3,p4,col,thickness,0); }
 void wrap_ImDrawList_AddBezierQuadratic(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,ImU32 col,float thickness) { ImDrawList_AddBezierQuadratic(self,p1,p2,p3,col,thickness,0); }
-void wrap_ImDrawList_AddCallback(ImDrawList* self,ImDrawCallback callback,uintptr_t userdata) { wrap_ImDrawList_AddCallbackV(self,callback,userdata,0); }
+void wrap_ImDrawList_AddCallback(ImDrawList* self,ImDrawCallback callback) { wrap_ImDrawList_AddCallbackV(self,callback,0,0); }
 void wrap_ImDrawList_AddCircle(ImDrawList* self,const ImVec2 center,float radius,ImU32 col) { ImDrawList_AddCircle(self,center,radius,col,0,1.0f); }
 void wrap_ImDrawList_AddCircleFilled(ImDrawList* self,const ImVec2 center,float radius,ImU32 col) { ImDrawList_AddCircleFilled(self,center,radius,col,0); }
 void wrap_ImDrawList_AddEllipse(ImDrawList* self,const ImVec2 center,const ImVec2 radius,ImU32 col) { ImDrawList_AddEllipse(self,center,radius,col,0.0f,0,1.0f); }
@@ -116,9 +118,12 @@ void wrap_ImDrawList_AddImage(ImDrawList* self,ImTextureRef tex_ref,const ImVec2
 void wrap_ImDrawList_AddImageQuad(ImDrawList* self,ImTextureRef tex_ref,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4) { ImDrawList_AddImageQuad(self,tex_ref,p1,p2,p3,p4,(ImVec2){0,0},(ImVec2){1,0},(ImVec2){1,1},(ImVec2){0,1},4294967295); }
 void wrap_ImDrawList_AddImageRounded(ImDrawList* self,ImTextureRef tex_ref,const ImVec2 p_min,const ImVec2 p_max,const ImVec2 uv_min,const ImVec2 uv_max,ImU32 col,float rounding) { ImDrawList_AddImageRounded(self,tex_ref,p_min,p_max,uv_min,uv_max,col,rounding,0); }
 void wrap_ImDrawList_AddLine(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,ImU32 col) { ImDrawList_AddLine(self,p1,p2,col,1.0f); }
+void wrap_ImDrawList_AddLineH(ImDrawList* self,float min_x,float max_x,float y,ImU32 col) { ImDrawList_AddLineH(self,min_x,max_x,y,col,1.0f); }
+void wrap_ImDrawList_AddLineV(ImDrawList* self,float x,float min_y,float max_y,ImU32 col) { ImDrawList_AddLineV(self,x,min_y,max_y,col,1.0f); }
 void wrap_ImDrawList_AddNgon(ImDrawList* self,const ImVec2 center,float radius,ImU32 col,int num_segments) { ImDrawList_AddNgon(self,center,radius,col,num_segments,1.0f); }
+void wrap_ImDrawList_AddPolyline(ImDrawList* self,const ImVec2* points,int num_points,ImU32 col,float thickness) { ImDrawList_AddPolyline(self,points,num_points,col,thickness,0); }
 void wrap_ImDrawList_AddQuad(ImDrawList* self,const ImVec2 p1,const ImVec2 p2,const ImVec2 p3,const ImVec2 p4,ImU32 col) { ImDrawList_AddQuad(self,p1,p2,p3,p4,col,1.0f); }
-void wrap_ImDrawList_AddRect(ImDrawList* self,const ImVec2 p_min,const ImVec2 p_max,ImU32 col) { ImDrawList_AddRect(self,p_min,p_max,col,0.0f,0,1.0f); }
+void wrap_ImDrawList_AddRect(ImDrawList* self,const ImVec2 p_min,const ImVec2 p_max,ImU32 col) { ImDrawList_AddRect(self,p_min,p_max,col,0.0f,1.0f,0); }
 void wrap_ImDrawList_AddRectFilled(ImDrawList* self,const ImVec2 p_min,const ImVec2 p_max,ImU32 col) { ImDrawList_AddRectFilled(self,p_min,p_max,col,0.0f,0); }
 void wrap_ImDrawList_AddText_FontPtr(ImDrawList* self,ImFont* font,float font_size,const ImVec2 pos,ImU32 col,const char* text_begin) { wrap_ImDrawList_AddText_FontPtrV(self,font,font_size,pos,col,text_begin,0.0f,0); }
 void wrap_ImDrawList_AddText_Vec2(ImDrawList* self,const ImVec2 pos,ImU32 col,const char* text_begin) { wrap_ImDrawList_AddText_Vec2V(self,pos,col,text_begin); }
@@ -128,7 +133,7 @@ void wrap_ImDrawList_PathBezierCubicCurveTo(ImDrawList* self,const ImVec2 p2,con
 void wrap_ImDrawList_PathBezierQuadraticCurveTo(ImDrawList* self,const ImVec2 p2,const ImVec2 p3) { ImDrawList_PathBezierQuadraticCurveTo(self,p2,p3,0); }
 void wrap_ImDrawList_PathEllipticalArcTo(ImDrawList* self,const ImVec2 center,const ImVec2 radius,float rot,float a_min,float a_max) { ImDrawList_PathEllipticalArcTo(self,center,radius,rot,a_min,a_max,0); }
 void wrap_ImDrawList_PathRect(ImDrawList* self,const ImVec2 rect_min,const ImVec2 rect_max) { ImDrawList_PathRect(self,rect_min,rect_max,0.0f,0); }
-void wrap_ImDrawList_PathStroke(ImDrawList* self,ImU32 col) { ImDrawList_PathStroke(self,col,0,1.0f); }
+void wrap_ImDrawList_PathStroke(ImDrawList* self,ImU32 col) { ImDrawList_PathStroke(self,col,1.0f,0); }
 void wrap_ImDrawList_PushClipRect(ImDrawList* self,const ImVec2 clip_rect_min,const ImVec2 clip_rect_max) { ImDrawList_PushClipRect(self,clip_rect_min,clip_rect_max,false); }
 ImFontAtlasRectId wrap_ImFontAtlas_AddCustomRect(ImFontAtlas* self,int width,int height) { return ImFontAtlas_AddCustomRect(self,width,height,0); }
 ImFont* wrap_ImFontAtlas_AddFontDefault(ImFontAtlas* self) { return ImFontAtlas_AddFontDefault(self,0); }
@@ -226,6 +231,7 @@ ImU32 wrap_igGetColorU32_U32(ImU32 col) { return igGetColorU32_U32(col,1.0f); }
 float wrap_igGetColumnOffset() { return igGetColumnOffset(-1); }
 float wrap_igGetColumnWidth() { return igGetColumnWidth(-1); }
 ImDrawList* wrap_igGetForegroundDrawList_ViewportPtr() { return igGetForegroundDrawList_ViewportPtr(0); }
+int wrap_igGetItemClickedCountWithSingleClickDelay() { return igGetItemClickedCountWithSingleClickDelay(0,-1.0f); }
 ImVec2_c wrap_igGetMouseDragDelta() { return igGetMouseDragDelta(0,-1.0f); }
 ImGuiTypingSelectRequest* wrap_igGetTypingSelectRequest() { return igGetTypingSelectRequest(ImGuiTypingSelectFlags_None); }
 uintptr_t wrap_igImFileLoadToMemory(const char* filename,const char* mode) { return wrap_igImFileLoadToMemoryV(filename,mode,0,0); }
@@ -268,6 +274,7 @@ bool wrap_igIsMouseDragPastThreshold(ImGuiMouseButton button) { return igIsMouse
 bool wrap_igIsMouseDragging(ImGuiMouseButton button) { return igIsMouseDragging(button,-1.0f); }
 bool wrap_igIsMouseHoveringRect(const ImVec2 r_min,const ImVec2 r_max) { return igIsMouseHoveringRect(r_min,r_max,true); }
 bool wrap_igIsMousePosValid() { return igIsMousePosValid(0); }
+bool wrap_igIsMouseReleasedWithDelay(ImGuiMouseButton button) { return igIsMouseReleasedWithDelay(button,-1.f); }
 bool wrap_igIsPopupOpen_Str(const char* str_id) { return igIsPopupOpen_Str(str_id,0); }
 bool wrap_igIsWindowContentHoverable(ImGuiWindow* window) { return igIsWindowContentHoverable(window,0); }
 bool wrap_igIsWindowFocused() { return igIsWindowFocused(0); }
@@ -285,10 +292,11 @@ void wrap_igLogToTTY() { igLogToTTY(-1); }
 bool wrap_igMenuItemEx(const char* label,const char* icon) { return igMenuItemEx(label,icon,0,false,true); }
 bool wrap_igMenuItem_Bool(const char* label) { return igMenuItem_Bool(label,0,false,true); }
 bool wrap_igMenuItem_BoolPtr(const char* label,const char* shortcut,bool* p_selected) { return igMenuItem_BoolPtr(label,shortcut,p_selected,true); }
-void wrap_igOpenPopupEx(ImGuiID id) { igOpenPopupEx(id,ImGuiPopupFlags_None); }
-void wrap_igOpenPopupOnItemClick() { igOpenPopupOnItemClick(0,0); }
-void wrap_igOpenPopup_ID(ImGuiID id) { igOpenPopup_ID(id,0); }
-void wrap_igOpenPopup_Str(const char* str_id) { igOpenPopup_Str(str_id,0); }
+void wrap_igMultiSelectItemFooter(ImGuiID id,bool* p_selected,bool* p_pressed) { igMultiSelectItemFooter(id,p_selected,p_pressed,0); }
+bool wrap_igOpenPopupEx(ImGuiID id) { return igOpenPopupEx(id,ImGuiPopupFlags_None); }
+bool wrap_igOpenPopupOnItemClick() { return igOpenPopupOnItemClick(0,0); }
+bool wrap_igOpenPopup_ID(ImGuiID id) { return igOpenPopup_ID(id,0); }
+bool wrap_igOpenPopup_Str(const char* str_id) { return igOpenPopup_Str(str_id,0); }
 void wrap_igPlotHistogram_FloatPtr(const char* label,const float* values,int values_count) { igPlotHistogram_FloatPtr(label,values,values_count,0,0,igGET_FLT_MAX(),igGET_FLT_MAX(),(ImVec2){0,0},sizeof(float)); }
 void wrap_igPlotLines_FloatPtr(const char* label,const float* values,int values_count) { igPlotLines_FloatPtr(label,values,values_count,0,0,igGET_FLT_MAX(),igGET_FLT_MAX(),(ImVec2){0,0},sizeof(float)); }
 void wrap_igPopStyleColor() { igPopStyleColor(1); }
@@ -299,7 +307,7 @@ void wrap_igRenderArrow(ImDrawList* draw_list,ImVec2 pos,ImU32 col,ImGuiDir dir)
 void wrap_igRenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list,ImVec2 p_min,ImVec2 p_max,ImU32 fill_col,float grid_step,ImVec2 grid_off) { igRenderColorRectWithAlphaCheckerboard(draw_list,p_min,p_max,fill_col,grid_step,grid_off,0.0f,0); }
 void wrap_igRenderFrame(ImVec2 p_min,ImVec2 p_max,ImU32 fill_col) { igRenderFrame(p_min,p_max,fill_col,true,0.0f); }
 void wrap_igRenderFrameBorder(ImVec2 p_min,ImVec2 p_max) { igRenderFrameBorder(p_min,p_max,0.0f); }
-void wrap_igRenderNavCursor(const ImRect bb,ImGuiID id) { igRenderNavCursor(bb,id,ImGuiNavRenderCursorFlags_None); }
+void wrap_igRenderNavCursor(const ImRect bb,ImGuiID id) { igRenderNavCursor(bb,id,ImGuiNavRenderCursorFlags_None,-1.0f); }
 void wrap_igRenderPlatformWindowsDefault() { wrap_igRenderPlatformWindowsDefaultV(0,0); }
 void wrap_igRenderText(ImVec2 pos,const char* text,const int text_len) { wrap_igRenderTextV(pos,text,text_len,true); }
 void wrap_igRenderTextClipped(const ImVec2 pos_min,const ImVec2 pos_max,const char* text,const int text_len,const ImVec2* text_size_if_known) { wrap_igRenderTextClippedV(pos_min,pos_max,text,text_len,text_size_if_known,(ImVec2){0,0},0); }

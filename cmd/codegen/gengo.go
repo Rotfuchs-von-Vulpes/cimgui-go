@@ -1,9 +1,14 @@
 package main
 
 import (
+	"errors"
 	"regexp"
 	"strings"
 )
+
+const cNamespaceSeparator = "::"
+
+var ErrCppType = errors.New("is a C++ type")
 
 type (
 	// EnumIdentifier is in theory EnumName_
@@ -15,6 +20,14 @@ type (
 	// Should be created only by renameGoIdentifier
 	GoIdentifier string
 )
+
+func (c CIdentifier) validateCType() error {
+	if Contains(c, cNamespaceSeparator) {
+		return ErrCppType
+	}
+
+	return nil
+}
 
 func (c CIdentifier) trimImGuiPrefix(ctx *Context) CIdentifier {
 	for _, prefix := range ctx.preset.TrimPrefix {

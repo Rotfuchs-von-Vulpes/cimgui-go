@@ -22,9 +22,9 @@ func (io IO) AddMouseWheelDelta(horizontal, vertical float32) {
 // Commands returns the list of draw commands.
 // Typically 1 command = 1 GPU draw call, unless the command is a callback.
 func (d DrawData) CommandLists() []DrawList {
-	count := d.CmdListsCount()
+	count := d.CmdLists().Size
 	lists := make([]DrawList, count)
-	for i := int32(0); i < count; i++ {
+	for i := int32(0); i < int32(count); i++ {
 		lists[i] = d.getDrawListAt(i)
 	}
 	return lists

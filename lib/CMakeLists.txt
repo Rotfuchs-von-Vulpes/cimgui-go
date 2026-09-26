@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(cimgui)
 
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
 
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/imgui/imgui_tables.cpp)
 	set(TABLES_SOURCE "../cwrappers/imgui/imgui_tables.cpp")
@@ -26,12 +26,12 @@ file(GLOB IMGUI_SOURCES
     ../cwrappers/cimnodes.cpp
     ../cwrappers/cimmarkdown.cpp
     ../cwrappers/imgui_markdown/imgui_markdown.h
-    ../cwrappers/ImGuizmo/ImGuizmo.cpp
+    ../cwrappers/ImGuizmo/src/ImGuizmo.cpp
     ../cwrappers/cimguizmo.cpp
     ../cwrappers/ImGuiColorTextEdit/TextEditor.cpp
-    ../cwrappers/ImGuiColorTextEdit/LanguageDefinitions.cpp
-    ../cwrappers/ImGuiColorTextEdit/UnitTests.cpp
-    ../cwrappers/ImGuiColorTextEdit/ImGuiDebugPanel.cpp
+    ../cwrappers/ImGuiColorTextEdit/TextDiff.cpp
+    ../cwrappers/ImGuiColorTextEdit/extras/TrieAutoComplete.cpp
+    ../cwrappers/ImGuiColorTextEdit/example/dejavu.cpp # TODO: consider if this is really needed. ATM it is included in "manual" section of cimCTE
     ../cwrappers/cimCTE.cpp
 	${TABLES_SOURCE}
 )
@@ -40,6 +40,7 @@ set(CMAKE_BUILD_TYPE "Release")
 set(IMGUI_STATIC "on" CACHE STRING "Build as a static library")
 set(IMGUI_FREETYPE "no" CACHE STRING "Build with freetype library")
 set(IMGUI_LIBRARIES )
+add_definitions(-DCIMGUI_VARGS0)
 add_definitions(-DIMNODES_NAMESPACE=imnodes)
 add_definitions(-DIMGUI_MARKDOWN_NAMESPACE=ImMarkdown)
 

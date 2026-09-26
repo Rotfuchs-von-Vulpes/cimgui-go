@@ -124,7 +124,8 @@ func GenerateTypedefs(
 			maxTypedefs--
 			callbacks = append(callbacks, k)
 		case HasPrefix(typedefs.data[k], "struct") || isTemplate: // treat "template" typedefs as if they were structs
-			isOpaque := !IsStructName(k, ctx) && !isTemplate
+			_, opaqueOk := ctx.opaqueStructs[k]
+			isOpaque := (!IsStructName(k, ctx) && !isTemplate) || opaqueOk
 			if ctx.flags.ShowGenerated {
 				glg.Successf("typedef %s is a struct (is opaque? %v) or a \"template\" (%v).", k, isOpaque, isTemplate)
 			}
@@ -252,7 +253,8 @@ extern %[1]s %[1]s_fromUintptr(uintptr_t ptr);`, k)
 
 	// NOTE: in case of problems e.g. with Textures, here might be potential issue:
 	// Handle() is incomplete - it doesn't have right finalizer (for now I think this will not affect code)
-	fmt.Fprintf(g.GoSb, `
+	fmt.Fprintf(
+		g.GoSb, `
 type %[1]s struct {
 	Data uintptr
 }
@@ -294,7 +296,8 @@ func New%[1]sFromC[SRC any](cvalue SRC) *%[1]s {
 // k is plain C name of the typedef (key in typedefs_dict.json)
 // known is parsed value of k
 func (g *typedefsGenerator) writeAliasTypedef(k CIdentifier, known *typedefTypeContext) {
-	fmt.Fprintf(g.GoSb, `
+	fmt.Fprintf(
+		g.GoSb, `
 type %[1]s %[2]s
 
 // Handle returns C version of %[1]s and its finalizer func.
@@ -334,7 +337,8 @@ func New%[1]sFromC[SRC any](cvalue SRC) *%[1]s {
 }
 
 func (g *typedefsGenerator) writePtrTypedef(k CIdentifier, known *typedefTypeContext) {
-	fmt.Fprintf(g.GoSb, `
+	fmt.Fprintf(
+		g.GoSb, `
 type %[1]s  struct {
 	Data %[2]s
 }

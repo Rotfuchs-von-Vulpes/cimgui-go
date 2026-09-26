@@ -1,33 +1,149 @@
 {
+  "enum_comments": {
+    "ImAxis_": {
+      "above": "// Axis indices. The values assigned may change; NEVER hardcode these."
+    },
+    "ImPlotAxisFlags_": {
+      "above": "// Options for plot axes (see SetupAxis)."
+    },
+    "ImPlotBarGroupsFlags_": {
+      "above": "// Flags for PlotBarGroups. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotBarsFlags_": {
+      "above": "// Flags for PlotBars. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotBin_": {
+      "above": "// Enums for different automatic histogram binning methods (k = bin count or w = bin width)"
+    },
+    "ImPlotBubblesFlags_": {
+      "above": "// Flags for PlotBubbles. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotCol_": {
+      "above": "// Plot styling colors."
+    },
+    "ImPlotColormapScaleFlags_": {
+      "above": "// Flags for ColormapScale"
+    },
+    "ImPlotColormap_": {
+      "above": "// Built-in colormaps"
+    },
+    "ImPlotCond_": {
+      "above": "// Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"
+    },
+    "ImPlotDigitalFlags_": {
+      "above": "// Flags for PlotDigital (placeholder). Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotDragToolFlags_": {
+      "above": "// Options for DragPoint, DragLine, DragRect"
+    },
+    "ImPlotDummyFlags_": {
+      "above": "// Flags for PlotDummy (placeholder). Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotErrorBarsFlags_": {
+      "above": "// Flags for PlotErrorBars. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotFlags_": {
+      "above": "// Options for plots (see BeginPlot)."
+    },
+    "ImPlotHeatmapFlags_": {
+      "above": "// Flags for PlotHeatmap. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotHistogramFlags_": {
+      "above": "// Flags for PlotHistogram and PlotHistogram2D. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotImageFlags_": {
+      "above": "// Flags for PlotImage (placeholder). Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotInfLinesFlags_": {
+      "above": "// Flags for PlotInfLines. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotItemFlags_": {
+      "above": "// Flags for ANY PlotX function. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotLegendFlags_": {
+      "above": "// Options for legends (see SetupLegend)"
+    },
+    "ImPlotLineFlags_": {
+      "above": "// Flags for PlotLine. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotLocation_": {
+      "above": "// Used to position items on a plot (e.g. legends, labels, etc.)"
+    },
+    "ImPlotMarker_": {
+      "above": "// Marker specifications."
+    },
+    "ImPlotMouseTextFlags_": {
+      "above": "// Options for mouse hover text (see SetupMouseText)"
+    },
+    "ImPlotPieChartFlags_": {
+      "above": "// Flags for PlotPieChart. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotPolygonFlags_": {
+      "above": "// Flags for PlotPolygon. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotProp_": {
+      "above": "// Plotting properties. These provide syntactic sugar for creating ImPlotSpecs from (ImPlotProp,value) pairs. See ImPlotSpec documentation."
+    },
+    "ImPlotScale_": {
+      "above": "// Axis scale"
+    },
+    "ImPlotScatterFlags_": {
+      "above": "// Flags for PlotScatter. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotShadedFlags_": {
+      "above": "// Flags for PlotShaded (placeholder). Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotStairsFlags_": {
+      "above": "// Flags for PlotStairs. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotStemsFlags_": {
+      "above": "// Flags for PlotStems. Used by setting ImPlotSpec::Flags."
+    },
+    "ImPlotStyleVar_": {
+      "above": "// Plot styling variables."
+    },
+    "ImPlotSubplotFlags_": {
+      "above": "// Options for subplots (see BeginSubplot)"
+    },
+    "ImPlotTextFlags_": {
+      "above": "// Flags for PlotText. Used by setting ImPlotSpec::Flags."
+    }
+  },
   "enums": {
     "ImAxis_": [
       {
         "calc_value": 0,
+        "comment": "// enabled by default",
         "name": "ImAxis_X1",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// disabled by default",
         "name": "ImAxis_X2",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// disabled by default",
         "name": "ImAxis_X3",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// enabled by default",
         "name": "ImAxis_Y1",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// disabled by default",
         "name": "ImAxis_Y2",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// disabled by default",
         "name": "ImAxis_Y3",
         "value": "5"
       },
@@ -40,86 +156,103 @@
     "ImPlotAxisFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotAxisFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// the axis label will not be displayed (axis labels are also hidden if the supplied string name is nullptr)",
         "name": "ImPlotAxisFlags_NoLabel",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// no grid lines will be displayed",
         "name": "ImPlotAxisFlags_NoGridLines",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// no tick marks will be displayed",
         "name": "ImPlotAxisFlags_NoTickMarks",
         "value": "1 << 2"
       },
       {
         "calc_value": 8,
+        "comment": "// no text labels will be displayed",
         "name": "ImPlotAxisFlags_NoTickLabels",
         "value": "1 << 3"
       },
       {
         "calc_value": 16,
+        "comment": "// axis will not be initially fit to data extents on the first rendered frame",
         "name": "ImPlotAxisFlags_NoInitialFit",
         "value": "1 << 4"
       },
       {
         "calc_value": 32,
+        "comment": "// the user will not be able to open context menus with right-click",
         "name": "ImPlotAxisFlags_NoMenus",
         "value": "1 << 5"
       },
       {
         "calc_value": 64,
+        "comment": "// the user will not be able to switch the axis side by dragging it",
         "name": "ImPlotAxisFlags_NoSideSwitch",
         "value": "1 << 6"
       },
       {
         "calc_value": 128,
+        "comment": "// the axis will not have its background highlighted when hovered or held",
         "name": "ImPlotAxisFlags_NoHighlight",
         "value": "1 << 7"
       },
       {
         "calc_value": 256,
+        "comment": "// axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)",
         "name": "ImPlotAxisFlags_Opposite",
         "value": "1 << 8"
       },
       {
         "calc_value": 512,
+        "comment": "// grid lines will be displayed in the foreground (i.e. on top of data) instead of the background",
         "name": "ImPlotAxisFlags_Foreground",
         "value": "1 << 9"
       },
       {
         "calc_value": 1024,
+        "comment": "// the axis will be inverted",
         "name": "ImPlotAxisFlags_Invert",
         "value": "1 << 10"
       },
       {
         "calc_value": 2048,
+        "comment": "// axis will be auto-fitting to data extents",
         "name": "ImPlotAxisFlags_AutoFit",
         "value": "1 << 11"
       },
       {
         "calc_value": 4096,
+        "comment": "// axis will only fit points if the point is in the visible range of the **orthogonal** axis",
         "name": "ImPlotAxisFlags_RangeFit",
         "value": "1 << 12"
       },
       {
         "calc_value": 8192,
+        "comment": "// panning in a locked or constrained state will cause the axis to stretch if possible",
         "name": "ImPlotAxisFlags_PanStretch",
         "value": "1 << 13"
       },
       {
         "calc_value": 16384,
+        "comment": "// the axis minimum value will be locked when panning/zooming",
         "name": "ImPlotAxisFlags_LockMin",
         "value": "1 << 14"
       },
       {
         "calc_value": 32768,
+        "comment": "// the axis maximum value will be locked when panning/zooming",
         "name": "ImPlotAxisFlags_LockMax",
         "value": "1 << 15"
       },
@@ -142,16 +275,19 @@
     "ImPlotBarGroupsFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotBarGroupsFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// bar groups will be rendered horizontally on the current y-axis",
         "name": "ImPlotBarGroupsFlags_Horizontal",
         "value": "1 << 10"
       },
       {
         "calc_value": 2048,
+        "comment": "// items in a group will be stacked on top of each other",
         "name": "ImPlotBarGroupsFlags_Stacked",
         "value": "1 << 11"
       }
@@ -159,11 +295,13 @@
     "ImPlotBarsFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotBarsFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// bars will be rendered horizontally on the current y-axis",
         "name": "ImPlotBarsFlags_Horizontal",
         "value": "1 << 10"
       }
@@ -171,21 +309,25 @@
     "ImPlotBin_": [
       {
         "calc_value": -1,
+        "comment": "// k = sqrt(n)",
         "name": "ImPlotBin_Sqrt",
         "value": "-1"
       },
       {
         "calc_value": -2,
+        "comment": "// k = 1 + log2(n)",
         "name": "ImPlotBin_Sturges",
         "value": "-2"
       },
       {
         "calc_value": -3,
+        "comment": "// k = 2 * cbrt(n)",
         "name": "ImPlotBin_Rice",
         "value": "-3"
       },
       {
         "calc_value": -4,
+        "comment": "// w = 3.49 * sigma / cbrt(n)",
         "name": "ImPlotBin_Scott",
         "value": "-4"
       }
@@ -193,6 +335,7 @@
     "ImPlotBubblesFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotBubblesFlags_None",
         "value": "0"
       }
@@ -200,81 +343,97 @@
     "ImPlotCol_": [
       {
         "calc_value": 0,
+        "comment": "// plot frame background color (defaults to ImGuiCol_FrameBg)",
         "name": "ImPlotCol_FrameBg",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// plot area background color (defaults to ImGuiCol_WindowBg)",
         "name": "ImPlotCol_PlotBg",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// plot area border color (defaults to ImGuiCol_Border)",
         "name": "ImPlotCol_PlotBorder",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// legend background color (defaults to ImGuiCol_PopupBg)",
         "name": "ImPlotCol_LegendBg",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// legend border color (defaults to ImPlotCol_PlotBorder)",
         "name": "ImPlotCol_LegendBorder",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// legend text color (defaults to ImPlotCol_InlayText)",
         "name": "ImPlotCol_LegendText",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// plot title text color (defaults to ImGuiCol_Text)",
         "name": "ImPlotCol_TitleText",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// color of text appearing inside of plots (defaults to ImGuiCol_Text)",
         "name": "ImPlotCol_InlayText",
         "value": "7"
       },
       {
         "calc_value": 8,
+        "comment": "// axis label and tick labels color (defaults to ImGuiCol_Text)",
         "name": "ImPlotCol_AxisText",
         "value": "8"
       },
       {
         "calc_value": 9,
+        "comment": "// axis grid color (defaults to 25% ImPlotCol_AxisText)",
         "name": "ImPlotCol_AxisGrid",
         "value": "9"
       },
       {
         "calc_value": 10,
+        "comment": "// axis tick color (defaults to AxisGrid)",
         "name": "ImPlotCol_AxisTick",
         "value": "10"
       },
       {
         "calc_value": 11,
+        "comment": "// background color of axis hover region (defaults to transparent)",
         "name": "ImPlotCol_AxisBg",
         "value": "11"
       },
       {
         "calc_value": 12,
+        "comment": "// axis hover color (defaults to ImGuiCol_ButtonHovered)",
         "name": "ImPlotCol_AxisBgHovered",
         "value": "12"
       },
       {
         "calc_value": 13,
+        "comment": "// axis active color (defaults to ImGuiCol_ButtonActive)",
         "name": "ImPlotCol_AxisBgActive",
         "value": "13"
       },
       {
         "calc_value": 14,
+        "comment": "// box-selection color (defaults to yellow)",
         "name": "ImPlotCol_Selection",
         "value": "14"
       },
       {
         "calc_value": 15,
+        "comment": "// crosshairs color (defaults to ImPlotCol_PlotBorder)",
         "name": "ImPlotCol_Crosshairs",
         "value": "15"
       },
@@ -287,21 +446,25 @@
     "ImPlotColormapScaleFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotColormapScaleFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// the colormap axis label will not be displayed",
         "name": "ImPlotColormapScaleFlags_NoLabel",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// render the colormap label and tick labels on the opposite side",
         "name": "ImPlotColormapScaleFlags_Opposite",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)",
         "name": "ImPlotColormapScaleFlags_Invert",
         "value": "1 << 2"
       }
@@ -309,81 +472,97 @@
     "ImPlotColormap_": [
       {
         "calc_value": 0,
+        "comment": "// a.k.a. seaborn deep             (qual=true,  n=10) (default)",
         "name": "ImPlotColormap_Deep",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// a.k.a. matplotlib \"Set1\"        (qual=true,  n=9 )",
         "name": "ImPlotColormap_Dark",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// a.k.a. matplotlib \"Pastel1\"     (qual=true,  n=9 )",
         "name": "ImPlotColormap_Pastel",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// a.k.a. matplotlib \"Paired\"      (qual=true,  n=12)",
         "name": "ImPlotColormap_Paired",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// a.k.a. matplotlib \"viridis\"     (qual=false, n=11)",
         "name": "ImPlotColormap_Viridis",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// a.k.a. matplotlib \"plasma\"      (qual=false, n=11)",
         "name": "ImPlotColormap_Plasma",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// a.k.a. matplotlib/MATLAB \"hot\"  (qual=false, n=11)",
         "name": "ImPlotColormap_Hot",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// a.k.a. matplotlib/MATLAB \"cool\" (qual=false, n=11)",
         "name": "ImPlotColormap_Cool",
         "value": "7"
       },
       {
         "calc_value": 8,
+        "comment": "// a.k.a. matplotlib/MATLAB \"pink\" (qual=false, n=11)",
         "name": "ImPlotColormap_Pink",
         "value": "8"
       },
       {
         "calc_value": 9,
+        "comment": "// a.k.a. MATLAB \"jet\"             (qual=false, n=11)",
         "name": "ImPlotColormap_Jet",
         "value": "9"
       },
       {
         "calc_value": 10,
+        "comment": "// a.k.a. matplotlib \"twilight\"    (qual=false, n=11)",
         "name": "ImPlotColormap_Twilight",
         "value": "10"
       },
       {
         "calc_value": 11,
+        "comment": "// red/blue, Color Brewer          (qual=false, n=11)",
         "name": "ImPlotColormap_RdBu",
         "value": "11"
       },
       {
         "calc_value": 12,
+        "comment": "// brown/blue-green, Color Brewer  (qual=false, n=11)",
         "name": "ImPlotColormap_BrBG",
         "value": "12"
       },
       {
         "calc_value": 13,
+        "comment": "// pink/yellow-green, Color Brewer (qual=false, n=11)",
         "name": "ImPlotColormap_PiYG",
         "value": "13"
       },
       {
         "calc_value": 14,
+        "comment": "// color spectrum, Color Brewer    (qual=false, n=11)",
         "name": "ImPlotColormap_Spectral",
         "value": "14"
       },
       {
         "calc_value": 15,
+        "comment": "// white/black                     (qual=false, n=2 )",
         "name": "ImPlotColormap_Greys",
         "value": "15"
       }
@@ -391,16 +570,19 @@
     "ImPlotCond_": [
       {
         "calc_value": 0,
+        "comment": "// No condition (always set the variable), same as _Always",
         "name": "ImPlotCond_None",
         "value": "ImGuiCond_None"
       },
       {
         "calc_value": 1,
+        "comment": "// No condition (always set the variable)",
         "name": "ImPlotCond_Always",
         "value": "ImGuiCond_Always"
       },
       {
         "calc_value": 2,
+        "comment": "// Set the variable once per runtime session (only the first call will succeed)",
         "name": "ImPlotCond_Once",
         "value": "ImGuiCond_Once"
       }
@@ -413,26 +595,31 @@
       },
       {
         "calc_value": 1,
+        "comment": "// 10/3           [ --10-03      ]",
         "name": "ImPlotDateFmt_DayMo",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// 10/3/91        [ 1991-10-03   ]",
         "name": "ImPlotDateFmt_DayMoYr",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// Oct 1991       [ 1991-10      ]",
         "name": "ImPlotDateFmt_MoYr",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// Oct            [ --10         ]",
         "name": "ImPlotDateFmt_Mo",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// 1991           [ 1991         ]",
         "name": "ImPlotDateFmt_Yr",
         "value": "5"
       }
@@ -440,6 +627,7 @@
     "ImPlotDigitalFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotDigitalFlags_None",
         "value": "0"
       }
@@ -447,26 +635,31 @@
     "ImPlotDragToolFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotDragToolFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// drag tools won't change cursor icons when hovered or held",
         "name": "ImPlotDragToolFlags_NoCursors",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// the drag tool won't be considered for plot fits",
         "name": "ImPlotDragToolFlags_NoFit",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// lock the tool from user inputs",
         "name": "ImPlotDragToolFlags_NoInputs",
         "value": "1 << 2"
       },
       {
         "calc_value": 8,
+        "comment": "// tool rendering will be delayed one frame; useful when applying position-constraints",
         "name": "ImPlotDragToolFlags_Delayed",
         "value": "1 << 3"
       }
@@ -474,6 +667,7 @@
     "ImPlotDummyFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotDummyFlags_None",
         "value": "0"
       }
@@ -481,11 +675,13 @@
     "ImPlotErrorBarsFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotErrorBarsFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// error bars will be rendered horizontally on the current y-axis",
         "name": "ImPlotErrorBarsFlags_Horizontal",
         "value": "1 << 10"
       }
@@ -493,51 +689,61 @@
     "ImPlotFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// the plot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. \"##MyPlot\")",
         "name": "ImPlotFlags_NoTitle",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// the legend will not be displayed",
         "name": "ImPlotFlags_NoLegend",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// the mouse position, in plot coordinates, will not be displayed inside of the plot",
         "name": "ImPlotFlags_NoMouseText",
         "value": "1 << 2"
       },
       {
         "calc_value": 8,
+        "comment": "// the user will not be able to interact with the plot",
         "name": "ImPlotFlags_NoInputs",
         "value": "1 << 3"
       },
       {
         "calc_value": 16,
+        "comment": "// the user will not be able to open context menus",
         "name": "ImPlotFlags_NoMenus",
         "value": "1 << 4"
       },
       {
         "calc_value": 32,
+        "comment": "// the user will not be able to box-select",
         "name": "ImPlotFlags_NoBoxSelect",
         "value": "1 << 5"
       },
       {
         "calc_value": 64,
+        "comment": "// the ImGui frame will not be rendered",
         "name": "ImPlotFlags_NoFrame",
         "value": "1 << 6"
       },
       {
         "calc_value": 128,
+        "comment": "// x and y axes pairs will be constrained to have the same units/pixel",
         "name": "ImPlotFlags_Equal",
         "value": "1 << 7"
       },
       {
         "calc_value": 256,
+        "comment": "// the default mouse cursor will be replaced with a crosshair when hovered",
         "name": "ImPlotFlags_Crosshairs",
         "value": "1 << 8"
       },
@@ -550,11 +756,13 @@
     "ImPlotHeatmapFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotHeatmapFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// data will be read in column major order",
         "name": "ImPlotHeatmapFlags_ColMajor",
         "value": "1 << 10"
       }
@@ -562,31 +770,37 @@
     "ImPlotHistogramFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotHistogramFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// histogram bars will be rendered horizontally (not supported by PlotHistogram2D)",
         "name": "ImPlotHistogramFlags_Horizontal",
         "value": "1 << 10"
       },
       {
         "calc_value": 2048,
+        "comment": "// each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)",
         "name": "ImPlotHistogramFlags_Cumulative",
         "value": "1 << 11"
       },
       {
         "calc_value": 4096,
+        "comment": "// counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set",
         "name": "ImPlotHistogramFlags_Density",
         "value": "1 << 12"
       },
       {
         "calc_value": 8192,
+        "comment": "// exclude values outside the specified histogram range from the count toward normalizing and cumulative counts",
         "name": "ImPlotHistogramFlags_NoOutliers",
         "value": "1 << 13"
       },
       {
         "calc_value": 16384,
+        "comment": "// data will be read in column major order (not supported by PlotHistogram)",
         "name": "ImPlotHistogramFlags_ColMajor",
         "value": "1 << 14"
       }
@@ -594,6 +808,7 @@
     "ImPlotImageFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotImageFlags_None",
         "value": "0"
       }
@@ -601,11 +816,13 @@
     "ImPlotInfLinesFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotInfLinesFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// lines will be rendered horizontally on the current y-axis",
         "name": "ImPlotInfLinesFlags_Horizontal",
         "value": "1 << 10"
       }
@@ -618,11 +835,13 @@
       },
       {
         "calc_value": 1,
+        "comment": "// the item won't have a legend entry displayed",
         "name": "ImPlotItemFlags_NoLegend",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// the item won't be considered for plot fits",
         "name": "ImPlotItemFlags_NoFit",
         "value": "1 << 1"
       }
@@ -630,46 +849,55 @@
     "ImPlotLegendFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotLegendFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// legend icons will not function as hide/show buttons",
         "name": "ImPlotLegendFlags_NoButtons",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// plot items will not be highlighted when their legend entry is hovered",
         "name": "ImPlotLegendFlags_NoHighlightItem",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)",
         "name": "ImPlotLegendFlags_NoHighlightAxis",
         "value": "1 << 2"
       },
       {
         "calc_value": 8,
+        "comment": "// the user will not be able to open context menus with right-click",
         "name": "ImPlotLegendFlags_NoMenus",
         "value": "1 << 3"
       },
       {
         "calc_value": 16,
+        "comment": "// legend will be rendered outside of the plot area",
         "name": "ImPlotLegendFlags_Outside",
         "value": "1 << 4"
       },
       {
         "calc_value": 32,
+        "comment": "// legend entries will be displayed horizontally",
         "name": "ImPlotLegendFlags_Horizontal",
         "value": "1 << 5"
       },
       {
         "calc_value": 64,
+        "comment": "// legend entries will be displayed in alphabetical order",
         "name": "ImPlotLegendFlags_Sort",
         "value": "1 << 6"
       },
       {
         "calc_value": 128,
+        "comment": "// legend entries will be displayed in reverse order",
         "name": "ImPlotLegendFlags_Reverse",
         "value": "1 << 7"
       }
@@ -677,31 +905,37 @@
     "ImPlotLineFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotLineFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// a line segment will be rendered from every two consecutive points",
         "name": "ImPlotLineFlags_Segments",
         "value": "1 << 10"
       },
       {
         "calc_value": 2048,
+        "comment": "// the last and first point will be connected to form a closed loop",
         "name": "ImPlotLineFlags_Loop",
         "value": "1 << 11"
       },
       {
         "calc_value": 4096,
+        "comment": "// NaNs values will be skipped instead of rendered as missing data",
         "name": "ImPlotLineFlags_SkipNaN",
         "value": "1 << 12"
       },
       {
         "calc_value": 8192,
+        "comment": "// markers (if displayed) on the edge of a plot will not be clipped",
         "name": "ImPlotLineFlags_NoClip",
         "value": "1 << 13"
       },
       {
         "calc_value": 16384,
+        "comment": "// a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases",
         "name": "ImPlotLineFlags_Shaded",
         "value": "1 << 14"
       }
@@ -709,46 +943,55 @@
     "ImPlotLocation_": [
       {
         "calc_value": 0,
+        "comment": "// center-center",
         "name": "ImPlotLocation_Center",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// top-center",
         "name": "ImPlotLocation_North",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// bottom-center",
         "name": "ImPlotLocation_South",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// center-left",
         "name": "ImPlotLocation_West",
         "value": "1 << 2"
       },
       {
         "calc_value": 8,
+        "comment": "// center-right",
         "name": "ImPlotLocation_East",
         "value": "1 << 3"
       },
       {
         "calc_value": 5,
+        "comment": "// top-left",
         "name": "ImPlotLocation_NorthWest",
         "value": "ImPlotLocation_North | ImPlotLocation_West"
       },
       {
         "calc_value": 9,
+        "comment": "// top-right",
         "name": "ImPlotLocation_NorthEast",
         "value": "ImPlotLocation_North | ImPlotLocation_East"
       },
       {
         "calc_value": 6,
+        "comment": "// bottom-left",
         "name": "ImPlotLocation_SouthWest",
         "value": "ImPlotLocation_South | ImPlotLocation_West"
       },
       {
         "calc_value": 10,
+        "comment": "// bottom-right",
         "name": "ImPlotLocation_SouthEast",
         "value": "ImPlotLocation_South | ImPlotLocation_East"
       }
@@ -763,88 +1006,116 @@
     "ImPlotMarker_": [
       {
         "calc_value": -2,
+        "comment": "// no marker",
         "name": "ImPlotMarker_None",
         "value": "-2"
       },
       {
         "calc_value": -1,
+        "comment": "// automatic marker selection",
         "name": "ImPlotMarker_Auto",
         "value": "-1"
       },
       {
         "calc_value": 0,
+        "comment": "// a circle marker (default)",
         "name": "ImPlotMarker_Circle",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// a square maker",
         "name": "ImPlotMarker_Square",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// a diamond marker",
         "name": "ImPlotMarker_Diamond",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// an upward-pointing triangle marker",
         "name": "ImPlotMarker_Up",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// an downward-pointing triangle marker",
         "name": "ImPlotMarker_Down",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// an leftward-pointing triangle marker",
         "name": "ImPlotMarker_Left",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// an rightward-pointing triangle marker",
         "name": "ImPlotMarker_Right",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// a cross marker (not fill-able)",
         "name": "ImPlotMarker_Cross",
         "value": "7"
       },
       {
         "calc_value": 8,
+        "comment": "// a plus marker (not fill-able)",
         "name": "ImPlotMarker_Plus",
         "value": "8"
       },
       {
         "calc_value": 9,
+        "comment": "// a asterisk marker (not fill-able)",
         "name": "ImPlotMarker_Asterisk",
         "value": "9"
       },
       {
         "calc_value": 10,
-        "name": "ImPlotMarker_COUNT",
+        "comment": "// a vertical line marker (not fill-able)",
+        "name": "ImPlotMarker_Vertical",
         "value": "10"
+      },
+      {
+        "calc_value": 11,
+        "comment": "// a horizontal line marker (not fill-able)",
+        "name": "ImPlotMarker_Horizontal",
+        "value": "11"
+      },
+      {
+        "calc_value": 12,
+        "name": "ImPlotMarker_COUNT",
+        "value": "12"
       }
     ],
     "ImPlotMouseTextFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotMouseTextFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// only show the mouse position for primary axes",
         "name": "ImPlotMouseTextFlags_NoAuxAxes",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// axes label formatters won't be used to render text",
         "name": "ImPlotMouseTextFlags_NoFormat",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// always display mouse position even if plot not hovered",
         "name": "ImPlotMouseTextFlags_ShowAlways",
         "value": "1 << 2"
       }
@@ -852,26 +1123,31 @@
     "ImPlotPieChartFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotPieChartFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// force normalization of pie chart values (i.e. always make a full circle if sum < 0)",
         "name": "ImPlotPieChartFlags_Normalize",
         "value": "1 << 10"
       },
       {
         "calc_value": 2048,
+        "comment": "// ignore hidden slices when drawing the pie chart (as if they were not there)",
         "name": "ImPlotPieChartFlags_IgnoreHidden",
         "value": "1 << 11"
       },
       {
         "calc_value": 4096,
+        "comment": "// explode legend-hovered slice",
         "name": "ImPlotPieChartFlags_Exploding",
         "value": "1 << 12"
       },
       {
         "calc_value": 8192,
+        "comment": "// do not draw slice borders",
         "name": "ImPlotPieChartFlags_NoSliceBorder",
         "value": "1 << 13"
       }
@@ -879,11 +1155,13 @@
     "ImPlotPolygonFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default (closed, convex polygon)",
         "name": "ImPlotPolygonFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// use concave polygon filling (slower but supports concave shapes)",
         "name": "ImPlotPolygonFlags_Concave",
         "value": "1 << 10"
       }
@@ -891,86 +1169,103 @@
     "ImPlotProp_": [
       {
         "calc_value": 0,
+        "comment": "// line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color",
         "name": "ImPlotProp_LineColor",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// array of colors for each line; if nullptr, use LineColor for all lines",
         "name": "ImPlotProp_LineColors",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// line weight in pixels (applies to lines, bar edges, marker edges)",
         "name": "ImPlotProp_LineWeight",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color",
         "name": "ImPlotProp_FillColor",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// array of colors for each fill; if nullptr, use FillColor for all fills",
         "name": "ImPlotProp_FillColors",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)",
         "name": "ImPlotProp_FillAlpha",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// marker type; specify ImPlotMarker_Auto to use the next unused marker",
         "name": "ImPlotProp_Marker",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// size of markers (radius) *in pixels*",
         "name": "ImPlotProp_MarkerSize",
         "value": "7"
       },
       {
         "calc_value": 8,
+        "comment": "// array of sizes for each marker; if nullptr, use MarkerSize for all markers",
         "name": "ImPlotProp_MarkerSizes",
         "value": "8"
       },
       {
         "calc_value": 9,
+        "comment": "// marker edge color; IMPLOT_AUTO_COL will use LineColor",
         "name": "ImPlotProp_MarkerLineColor",
         "value": "9"
       },
       {
         "calc_value": 10,
+        "comment": "// array of colors for each marker edge; if nullptr, use MarkerLineColor for all markers",
         "name": "ImPlotProp_MarkerLineColors",
         "value": "10"
       },
       {
         "calc_value": 11,
+        "comment": "// marker face color; IMPLOT_AUTO_COL will use LineColor",
         "name": "ImPlotProp_MarkerFillColor",
         "value": "11"
       },
       {
         "calc_value": 12,
+        "comment": "// array of colors for each marker face; if nullptr, use MarkerFillColor for all markers",
         "name": "ImPlotProp_MarkerFillColors",
         "value": "12"
       },
       {
         "calc_value": 13,
+        "comment": "// size of error bar whiskers (width or height), and digital bars (height) *in pixels*",
         "name": "ImPlotProp_Size",
         "value": "13"
       },
       {
         "calc_value": 14,
+        "comment": "// data index offset",
         "name": "ImPlotProp_Offset",
         "value": "14"
       },
       {
         "calc_value": 15,
+        "comment": "// data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX",
         "name": "ImPlotProp_Stride",
         "value": "15"
       },
       {
         "calc_value": 16,
+        "comment": "// optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags",
         "name": "ImPlotProp_Flags",
         "value": "16"
       }
@@ -978,21 +1273,25 @@
     "ImPlotScale_": [
       {
         "calc_value": 0,
+        "comment": "// default linear scale",
         "name": "ImPlotScale_Linear",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// date/time scale",
         "name": "ImPlotScale_Time",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// base 10 logarithmic scale",
         "name": "ImPlotScale_Log10",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// symmetric log scale",
         "name": "ImPlotScale_SymLog",
         "value": "3"
       }
@@ -1000,11 +1299,13 @@
     "ImPlotScatterFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotScatterFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// markers on the edge of a plot will not be clipped",
         "name": "ImPlotScatterFlags_NoClip",
         "value": "1 << 10"
       }
@@ -1012,6 +1313,7 @@
     "ImPlotShadedFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotShadedFlags_None",
         "value": "0"
       }
@@ -1019,16 +1321,19 @@
     "ImPlotStairsFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotStairsFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]",
         "name": "ImPlotStairsFlags_PreStep",
         "value": "1 << 10"
       },
       {
         "calc_value": 2048,
+        "comment": "// a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases",
         "name": "ImPlotStairsFlags_Shaded",
         "value": "1 << 11"
       }
@@ -1036,11 +1341,13 @@
     "ImPlotStemsFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotStemsFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// stems will be rendered horizontally on the current y-axis",
         "name": "ImPlotStemsFlags_Horizontal",
         "value": "1 << 10"
       }
@@ -1048,101 +1355,121 @@
     "ImPlotStyleVar_": [
       {
         "calc_value": 0,
+        "comment": "// ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot",
         "name": "ImPlotStyleVar_PlotDefaultSize",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// ImVec2, minimum size plot frame can be when shrunk",
         "name": "ImPlotStyleVar_PlotMinSize",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// float,  thickness of border around plot area",
         "name": "ImPlotStyleVar_PlotBorderSize",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// float,  alpha multiplier applied to minor axis grid lines",
         "name": "ImPlotStyleVar_MinorAlpha",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// ImVec2, major tick lengths for X and Y axes",
         "name": "ImPlotStyleVar_MajorTickLen",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// ImVec2, minor tick lengths for X and Y axes",
         "name": "ImPlotStyleVar_MinorTickLen",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// ImVec2, line thickness of major ticks",
         "name": "ImPlotStyleVar_MajorTickSize",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// ImVec2, line thickness of minor ticks",
         "name": "ImPlotStyleVar_MinorTickSize",
         "value": "7"
       },
       {
         "calc_value": 8,
+        "comment": "// ImVec2, line thickness of major grid lines",
         "name": "ImPlotStyleVar_MajorGridSize",
         "value": "8"
       },
       {
         "calc_value": 9,
+        "comment": "// ImVec2, line thickness of minor grid lines",
         "name": "ImPlotStyleVar_MinorGridSize",
         "value": "9"
       },
       {
         "calc_value": 10,
+        "comment": "// ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)",
         "name": "ImPlotStyleVar_PlotPadding",
         "value": "10"
       },
       {
         "calc_value": 11,
+        "comment": "// ImVec2, padding between axes labels, tick labels, and plot edge",
         "name": "ImPlotStyleVar_LabelPadding",
         "value": "11"
       },
       {
         "calc_value": 12,
+        "comment": "// ImVec2, legend padding from plot edges",
         "name": "ImPlotStyleVar_LegendPadding",
         "value": "12"
       },
       {
         "calc_value": 13,
+        "comment": "// ImVec2, legend inner padding from legend edges",
         "name": "ImPlotStyleVar_LegendInnerPadding",
         "value": "13"
       },
       {
         "calc_value": 14,
+        "comment": "// ImVec2, spacing between legend entries",
         "name": "ImPlotStyleVar_LegendSpacing",
         "value": "14"
       },
       {
         "calc_value": 15,
+        "comment": "// ImVec2, padding between plot edge and interior info text",
         "name": "ImPlotStyleVar_MousePosPadding",
         "value": "15"
       },
       {
         "calc_value": 16,
+        "comment": "// ImVec2, text padding around annotation labels",
         "name": "ImPlotStyleVar_AnnotationPadding",
         "value": "16"
       },
       {
         "calc_value": 17,
+        "comment": "// ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)",
         "name": "ImPlotStyleVar_FitPadding",
         "value": "17"
       },
       {
         "calc_value": 18,
+        "comment": "// float,  digital plot padding from bottom in pixels",
         "name": "ImPlotStyleVar_DigitalPadding",
         "value": "18"
       },
       {
         "calc_value": 19,
+        "comment": "// float,  digital plot spacing gap in pixels",
         "name": "ImPlotStyleVar_DigitalSpacing",
         "value": "19"
       },
@@ -1155,61 +1482,73 @@
     "ImPlotSubplotFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotSubplotFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// the subplot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. \"##MySubplot\")",
         "name": "ImPlotSubplotFlags_NoTitle",
         "value": "1 << 0"
       },
       {
         "calc_value": 2,
+        "comment": "// the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)",
         "name": "ImPlotSubplotFlags_NoLegend",
         "value": "1 << 1"
       },
       {
         "calc_value": 4,
+        "comment": "// the user will not be able to open context menus with right-click",
         "name": "ImPlotSubplotFlags_NoMenus",
         "value": "1 << 2"
       },
       {
         "calc_value": 8,
+        "comment": "// resize splitters between subplot cells will be not be provided",
         "name": "ImPlotSubplotFlags_NoResize",
         "value": "1 << 3"
       },
       {
         "calc_value": 16,
+        "comment": "// subplot edges will not be aligned vertically or horizontally",
         "name": "ImPlotSubplotFlags_NoAlign",
         "value": "1 << 4"
       },
       {
         "calc_value": 32,
+        "comment": "// items across all subplots will be shared and rendered into a single legend entry",
         "name": "ImPlotSubplotFlags_ShareItems",
         "value": "1 << 5"
       },
       {
         "calc_value": 64,
+        "comment": "// link the y-axis limits of all plots in each row (does not apply to auxiliary axes)",
         "name": "ImPlotSubplotFlags_LinkRows",
         "value": "1 << 6"
       },
       {
         "calc_value": 128,
+        "comment": "// link the x-axis limits of all plots in each column (does not apply to auxiliary axes)",
         "name": "ImPlotSubplotFlags_LinkCols",
         "value": "1 << 7"
       },
       {
         "calc_value": 256,
+        "comment": "// link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)",
         "name": "ImPlotSubplotFlags_LinkAllX",
         "value": "1 << 8"
       },
       {
         "calc_value": 512,
+        "comment": "// link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)",
         "name": "ImPlotSubplotFlags_LinkAllY",
         "value": "1 << 9"
       },
       {
         "calc_value": 1024,
+        "comment": "// subplots are added in column major order instead of the default row major order",
         "name": "ImPlotSubplotFlags_ColMajor",
         "value": "1 << 10"
       }
@@ -1217,11 +1556,13 @@
     "ImPlotTextFlags_": [
       {
         "calc_value": 0,
+        "comment": "// default",
         "name": "ImPlotTextFlags_None",
         "value": "0"
       },
       {
         "calc_value": 1024,
+        "comment": "// text will be rendered vertically",
         "name": "ImPlotTextFlags_Vertical",
         "value": "1 << 10"
       }
@@ -1234,46 +1575,55 @@
       },
       {
         "calc_value": 1,
+        "comment": "// .428 552       [ .428 552     ]",
         "name": "ImPlotTimeFmt_Us",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// :29.428 552    [ :29.428 552  ]",
         "name": "ImPlotTimeFmt_SUs",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// :29.428        [ :29.428      ]",
         "name": "ImPlotTimeFmt_SMs",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// :29            [ :29          ]",
         "name": "ImPlotTimeFmt_S",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// 21:29.428      [ 21:29.428    ]",
         "name": "ImPlotTimeFmt_MinSMs",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// 7:21:29.428pm  [ 19:21:29.428 ]",
         "name": "ImPlotTimeFmt_HrMinSMs",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// 7:21:29pm      [ 19:21:29     ]",
         "name": "ImPlotTimeFmt_HrMinS",
         "value": "7"
       },
       {
         "calc_value": 8,
+        "comment": "// 7:21pm         [ 19:21        ]",
         "name": "ImPlotTimeFmt_HrMin",
         "value": "8"
       },
       {
         "calc_value": 9,
+        "comment": "// 7pm            [ 19:00        ]",
         "name": "ImPlotTimeFmt_Hr",
         "value": "9"
       }
@@ -1281,41 +1631,49 @@
     "ImPlotTimeUnit_": [
       {
         "calc_value": 0,
+        "comment": "// microsecond",
         "name": "ImPlotTimeUnit_Us",
         "value": "0"
       },
       {
         "calc_value": 1,
+        "comment": "// millisecond",
         "name": "ImPlotTimeUnit_Ms",
         "value": "1"
       },
       {
         "calc_value": 2,
+        "comment": "// second",
         "name": "ImPlotTimeUnit_S",
         "value": "2"
       },
       {
         "calc_value": 3,
+        "comment": "// minute",
         "name": "ImPlotTimeUnit_Min",
         "value": "3"
       },
       {
         "calc_value": 4,
+        "comment": "// hour",
         "name": "ImPlotTimeUnit_Hr",
         "value": "4"
       },
       {
         "calc_value": 5,
+        "comment": "// day",
         "name": "ImPlotTimeUnit_Day",
         "value": "5"
       },
       {
         "calc_value": 6,
+        "comment": "// month",
         "name": "ImPlotTimeUnit_Mo",
         "value": "6"
       },
       {
         "calc_value": 7,
+        "comment": "// year",
         "name": "ImPlotTimeUnit_Yr",
         "value": "7"
       },
@@ -1337,15 +1695,15 @@
     "ImPlotAxisFlags_": "implot:175",
     "ImPlotBarGroupsFlags_": "implot:305",
     "ImPlotBarsFlags_": "implot:299",
-    "ImPlotBin_": "implot:488",
+    "ImPlotBin_": "implot:490",
     "ImPlotBubblesFlags_": "implot:276",
     "ImPlotCol_": "implot:384",
     "ImPlotColormapData": "implot_internal:330",
     "ImPlotColormapScaleFlags_": "implot:245",
-    "ImPlotColormap_": "implot:455",
+    "ImPlotColormap_": "implot:457",
     "ImPlotCond_": "implot:376",
     "ImPlotContext": "implot_internal:1228",
-    "ImPlotDateFmt_": "implot_internal:252",
+    "ImPlotDateFmt_": 0,
     "ImPlotDateTimeSpec": "implot_internal:289",
     "ImPlotDigitalFlags_": "implot:355",
     "ImPlotDragToolFlags_": "implot:236",
@@ -1356,14 +1714,14 @@
     "ImPlotHistogramFlags_": "implot:345",
     "ImPlotImageFlags_": "implot:360",
     "ImPlotInfLinesFlags_": "implot:324",
-    "ImPlotInputMap": "implot:697",
+    "ImPlotInputMap": "implot:699",
     "ImPlotItem": "implot_internal:971",
     "ImPlotItemFlags_": "implot:253",
     "ImPlotItemGroup": "implot_internal:1023",
     "ImPlotLegend": "implot_internal:996",
     "ImPlotLegendFlags_": "implot:215",
     "ImPlotLineFlags_": "implot:260",
-    "ImPlotLocation_": "implot:475",
+    "ImPlotLocation_": "implot:477",
     "ImPlotMarkerInternal_": "implot_internal:274",
     "ImPlotMarker_": "implot:438",
     "ImPlotMouseTextFlags_": "implot:228",
@@ -1371,19 +1729,19 @@
     "ImPlotNextPlotData": "implot_internal:1187",
     "ImPlotPieChartFlags_": "implot:330",
     "ImPlotPlot": "implot_internal:1047",
-    "ImPlotPoint": "implot:608",
+    "ImPlotPoint": "implot:610",
     "ImPlotPointError": "implot_internal:432",
     "ImPlotPolygonFlags_": "implot:281",
     "ImPlotProp_": "implot:139",
-    "ImPlotRange": "implot:623",
-    "ImPlotRect": "implot:633",
+    "ImPlotRange": "implot:625",
+    "ImPlotRect": "implot:635",
     "ImPlotScale_": "implot:430",
     "ImPlotScatterFlags_": "implot:270",
     "ImPlotShadedFlags_": "implot:294",
-    "ImPlotSpec": "implot:515",
+    "ImPlotSpec": "implot:517",
     "ImPlotStairsFlags_": "implot:287",
     "ImPlotStemsFlags_": "implot:318",
-    "ImPlotStyle": "implot:647",
+    "ImPlotStyle": "implot:649",
     "ImPlotStyleVar_": "implot:405",
     "ImPlotSubplot": "implot_internal:1152",
     "ImPlotSubplotFlags_": "implot:199",
@@ -1393,7 +1751,7 @@
     "ImPlotTick": "implot_internal:552",
     "ImPlotTicker": "implot_internal:585",
     "ImPlotTime": "implot_internal:304",
-    "ImPlotTimeFmt_": "implot_internal:261",
+    "ImPlotTimeFmt_": 0,
     "ImPlotTimeUnit_": "implot_internal:240"
   },
   "nonPOD": {
@@ -1444,6 +1802,7 @@
     "ImGuiOldColumnData": "inherited",
     "ImGuiOldColumns": "inherited",
     "ImGuiOnceUponAFrame": "inherited",
+    "ImGuiPackedDate": "inherited",
     "ImGuiPayload": "inherited",
     "ImGuiPlatformIO": "inherited",
     "ImGuiPlatformImeData": "inherited",
@@ -1528,6 +1887,78 @@
     "ImTextureRef": "inherited",
     "ImVec2": "inherited",
     "ImVec4": "inherited"
+  },
+  "opaque_structs": [],
+  "struct_comments": {
+    "ImPlotAlignmentData": {
+      "above": "// Align plots group data"
+    },
+    "ImPlotAnnotation": {
+      "above": "// Interior plot label/annotation"
+    },
+    "ImPlotAnnotationCollection": {
+      "above": "// Collection of plot labels"
+    },
+    "ImPlotAxis": {
+      "above": "// Axis state information that must persist after EndPlot"
+    },
+    "ImPlotColormapData": {
+      "above": "// Colormap data storage"
+    },
+    "ImPlotContext": {
+      "above": "// Holds state information that must persist between calls to BeginPlot()/EndPlot()"
+    },
+    "ImPlotDateTimeSpec": {
+      "above": "// Combined date/time format spec"
+    },
+    "ImPlotInputMap": {
+      "above": "// Support for legacy versions\n// Input mapping structure. Default values listed. See also MapInputDefault, MapInputReverse."
+    },
+    "ImPlotItem": {
+      "above": "// State information for Plot items"
+    },
+    "ImPlotItemGroup": {
+      "above": "// Holds Items and Legend data"
+    },
+    "ImPlotLegend": {
+      "above": "// Holds Legend state"
+    },
+    "ImPlotNextItemData": {
+      "above": "// Temporary data storage for upcoming item"
+    },
+    "ImPlotNextPlotData": {
+      "above": "// Temporary data storage for upcoming plot"
+    },
+    "ImPlotPlot": {
+      "above": "// Holds Plot state information that must persist after EndPlot"
+    },
+    "ImPlotPointError": {
+      "above": "// ImPlotPoint with positive/negative error values"
+    },
+    "ImPlotRange": {
+      "above": "// Range defined by a min/max value."
+    },
+    "ImPlotRect": {
+      "above": "// Combination of two range limits for X and Y axes. Also an AABB defined by Min()/Max()."
+    },
+    "ImPlotSpec": {
+      "above": "// Plot item styling specification. Provide these to PlotX functions to override styling, specify\n// offsetting or stride, or set optional flags. This struct can be used in the following ways:\n//\n// 1. By declaring and defining a struct instance:\n//\n//    ImPlotSpec spec;\n//    spec.LineColor = ImVec4(1,0,0,1);\n//    spec.LineWeight = 2.0f;\n//    spec.Marker = ImPlotMarker_Circle;\n//    spec.Flags = ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments;\n//    ImPlot::PlotLine(\"MyLine\", xs, ys, 100, spec);\n//\n// 2. Inline using (ImPlotProp,value) pairs (order does NOT matter):\n//\n//    ImPlot::PlotLine(\"MyLine\", xs, ys, 100, \n//      ImPlotProp_LineColor, ImVec4(1,0,0,1),\n//      ImPlotProp_LineWeight, 2.0f,\n//      ImPlotProp_Marker, ImPlotMarker_Circle,\n//      ImPlotProp_Flags, ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments\n//    );"
+    },
+    "ImPlotStyle": {
+      "above": "// Plot style structure"
+    },
+    "ImPlotSubplot": {
+      "above": "// Holds subplot data that must persist after EndSubplot"
+    },
+    "ImPlotTick": {
+      "above": "// Tick mark info"
+    },
+    "ImPlotTicker": {
+      "above": "// Collection of ticks"
+    },
+    "ImPlotTime": {
+      "above": "// Two part timestamp struct."
+    }
   },
   "structs": {
     "Formatter_Time_Data": [
@@ -1862,6 +2293,9 @@
     ],
     "ImPlotContext": [
       {
+        "comment": {
+          "above": "\n    // Plot States"
+        },
         "name": "Plots",
         "template_type": "ImPlotPlot",
         "type": "ImPool_ImPlotPlot"
@@ -1892,10 +2326,16 @@
         "type": "ImPlotItem*"
       },
       {
+        "comment": {
+          "above": "    // Tick Marks and Labels"
+        },
         "name": "CTicker",
         "type": "ImPlotTicker"
       },
       {
+        "comment": {
+          "above": "    // Annotation and Tabs"
+        },
         "name": "Annotations",
         "type": "ImPlotAnnotationCollection"
       },
@@ -1904,6 +2344,9 @@
         "type": "ImPlotTagCollection"
       },
       {
+        "comment": {
+          "above": "    // Style and Colormaps"
+        },
         "name": "Style",
         "type": "ImPlotStyle"
       },
@@ -1927,15 +2370,24 @@
         "type": "ImVector_ImPlotColormap"
       },
       {
+        "comment": {
+          "above": "    // Time"
+        },
         "name": "Tm",
         "type": "tm"
       },
       {
+        "comment": {
+          "above": "    // Temp data for general use"
+        },
         "name": "TempDouble1",
         "template_type": "double",
         "type": "ImVector_double"
       },
       {
+        "comment": {
+          "above": "    // Temp data for general use"
+        },
         "name": "TempDouble2",
         "template_type": "double",
         "type": "ImVector_double"
@@ -1946,6 +2398,9 @@
         "type": "ImVector_int"
       },
       {
+        "comment": {
+          "above": "    // Misc"
+        },
         "name": "DigitalPlotItemCnt",
         "type": "int"
       },
@@ -1978,6 +2433,9 @@
         "type": "ImPlotItemGroup*"
       },
       {
+        "comment": {
+          "above": "    // Align plots"
+        },
         "name": "AlignmentData",
         "template_type": "ImPlotAlignmentData",
         "type": "ImPool_ImPlotAlignmentData"
@@ -2011,50 +2469,86 @@
     ],
     "ImPlotInputMap": [
       {
+        "comment": {
+          "sameline": "// LMB    enables panning when held,"
+        },
         "name": "Pan",
         "type": "ImGuiMouseButton"
       },
       {
+        "comment": {
+          "sameline": "// none   optional modifier that must be held for panning/fitting"
+        },
         "name": "PanMod",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// LMB    initiates fit when double clicked"
+        },
         "name": "Fit",
         "type": "ImGuiMouseButton"
       },
       {
+        "comment": {
+          "sameline": "// RMB    begins box selection when pressed and confirms selection when released"
+        },
         "name": "Select",
         "type": "ImGuiMouseButton"
       },
       {
+        "comment": {
+          "sameline": "// LMB    cancels active box selection when pressed; cannot be same as Select"
+        },
         "name": "SelectCancel",
         "type": "ImGuiMouseButton"
       },
       {
+        "comment": {
+          "sameline": "// none   optional modifier that must be held for box selection"
+        },
         "name": "SelectMod",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// Alt    expands active box selection horizontally to plot edge when held"
+        },
         "name": "SelectHorzMod",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// Shift  expands active box selection vertically to plot edge when held"
+        },
         "name": "SelectVertMod",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// RMB    opens context menus (if enabled) when clicked"
+        },
         "name": "Menu",
         "type": "ImGuiMouseButton"
       },
       {
+        "comment": {
+          "sameline": "// Ctrl   when held, all input is ignored; used to enable axis/plots as DND sources"
+        },
         "name": "OverrideMod",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// none   optional modifier that must be held for scroll wheel zooming"
+        },
         "name": "ZoomMod",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// 0.1f   zoom rate for scroll (e.g. 0.1f = 10% plot range every scroll click); make negative to invert"
+        },
         "name": "ZoomRate",
         "type": "float"
       }
@@ -2394,173 +2888,304 @@
     ],
     "ImPlotSpec": [
       {
+        "comment": {
+          "sameline": "// line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color"
+        },
         "name": "LineColor",
         "type": "ImVec4"
       },
       {
+        "comment": {
+          "sameline": "// array of colors for each line; if nullptr, use LineColor for all lines"
+        },
         "name": "LineColors",
         "type": "ImU32*"
       },
       {
+        "comment": {
+          "sameline": "// line weight in pixels (applies to lines, bar edges, marker edges)"
+        },
         "name": "LineWeight",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color"
+        },
         "name": "FillColor",
         "type": "ImVec4"
       },
       {
+        "comment": {
+          "sameline": "// array of colors for each fill; if nullptr, use FillColor for all fills"
+        },
         "name": "FillColors",
         "type": "ImU32*"
       },
       {
+        "comment": {
+          "sameline": "// alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)"
+        },
         "name": "FillAlpha",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// marker type; specify ImPlotMarker_Auto to use the next unused marker"
+        },
         "name": "Marker",
         "type": "ImPlotMarker"
       },
       {
+        "comment": {
+          "sameline": "// size of markers (radius) *in pixels*"
+        },
         "name": "MarkerSize",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// array of sizes for each marker; if nullptr, use MarkerSize for all markers"
+        },
         "name": "MarkerSizes",
         "type": "float*"
       },
       {
+        "comment": {
+          "sameline": "// marker edge color; IMPLOT_AUTO_COL will use LineColor"
+        },
         "name": "MarkerLineColor",
         "type": "ImVec4"
       },
       {
+        "comment": {
+          "sameline": "// array of colors for each marker edge; if nullptr, use MarkerLineColor for all markers"
+        },
         "name": "MarkerLineColors",
         "type": "ImU32*"
       },
       {
+        "comment": {
+          "sameline": "// marker face color; IMPLOT_AUTO_COL will use LineColor"
+        },
         "name": "MarkerFillColor",
         "type": "ImVec4"
       },
       {
+        "comment": {
+          "sameline": "// array of colors for each marker face; if nullptr, use MarkerFillColor for all markers"
+        },
         "name": "MarkerFillColors",
         "type": "ImU32*"
       },
       {
+        "comment": {
+          "sameline": "// size of error bar whiskers (width or height), and digital bars (height) *in pixels*"
+        },
         "name": "Size",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// data index offset"
+        },
         "name": "Offset",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX"
+        },
         "name": "Stride",
         "type": "int"
       },
       {
+        "comment": {
+          "sameline": "// optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags"
+        },
         "name": "Flags",
         "type": "ImPlotItemFlags"
       }
     ],
     "ImPlotStyle": [
       {
+        "comment": {
+          "above": "\n    // plot styling",
+          "sameline": "// = 400,300 default size used when ImVec2(0,0) is passed to BeginPlot"
+        },
         "name": "PlotDefaultSize",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 200,150 minimum size plot frame can be when shrunk"
+        },
         "name": "PlotMinSize",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 1,      line thickness of border around plot area"
+        },
         "name": "PlotBorderSize",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// = 0.25    alpha multiplier applied to minor axis grid lines"
+        },
         "name": "MinorAlpha",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// = 10,10   major tick lengths for X and Y axes"
+        },
         "name": "MajorTickLen",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 5,5     minor tick lengths for X and Y axes"
+        },
         "name": "MinorTickLen",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 1,1     line thickness of major ticks"
+        },
         "name": "MajorTickSize",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 1,1     line thickness of minor ticks"
+        },
         "name": "MinorTickSize",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 1,1     line thickness of major grid lines"
+        },
         "name": "MajorGridSize",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 1,1     line thickness of minor grid lines"
+        },
         "name": "MinorGridSize",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "above": "\n    // plot padding",
+          "sameline": "// = 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)"
+        },
         "name": "PlotPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 5,5     padding between axes labels, tick labels, and plot edge"
+        },
         "name": "LabelPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 10,10   legend padding from plot edges"
+        },
         "name": "LegendPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 5,5     legend inner padding from legend edges"
+        },
         "name": "LegendInnerPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 5,0     spacing between legend entries"
+        },
         "name": "LegendSpacing",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 10,10   padding between plot edge and interior mouse location text"
+        },
         "name": "MousePosPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 2,2     text padding around annotation labels"
+        },
         "name": "AnnotationPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1f,0.1f) adds 10% to the fit extents of X and Y)"
+        },
         "name": "FitPadding",
         "type": "ImVec2"
       },
       {
+        "comment": {
+          "sameline": "// = 20,     digital plot padding from bottom in pixels"
+        },
         "name": "DigitalPadding",
         "type": "float"
       },
       {
+        "comment": {
+          "sameline": "// = 4,      digital plot spacing gap in pixels"
+        },
         "name": "DigitalSpacing",
         "type": "float"
       },
       {
+        "comment": {
+          "above": "\n    // style colors",
+          "sameline": "// Array of styling colors. Indexable with ImPlotCol_ enums."
+        },
         "name": "Colors[ImPlotCol_COUNT]",
         "size": 16,
         "type": "ImVec4"
       },
       {
+        "comment": {
+          "above": "\n    // colormap",
+          "sameline": "// The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap."
+        },
         "name": "Colormap",
         "type": "ImPlotColormap"
       },
       {
+        "comment": {
+          "above": "\n    // settings/flags",
+          "sameline": "// = false,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled"
+        },
         "name": "UseLocalTime",
         "type": "bool"
       },
       {
+        "comment": {
+          "sameline": "// = false,  dates will be formatted according to ISO 8601 where applicable (e.g. YYYY-MM-DD, YYYY-MM, --MM-DD, etc.)"
+        },
         "name": "UseISO8601",
         "type": "bool"
       },
       {
+        "comment": {
+          "sameline": "// = false,  times will be formatted using a 24 hour clock"
+        },
         "name": "Use24HourClock",
         "type": "bool"
       }
@@ -2746,10 +3371,16 @@
     ],
     "ImPlotTime": [
       {
+        "comment": {
+          "sameline": "// second part"
+        },
         "name": "S",
         "type": "time_t"
       },
       {
+        "comment": {
+          "sameline": "// microsecond part"
+        },
         "name": "Us",
         "type": "int"
       }

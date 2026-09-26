@@ -10,11 +10,16 @@
 extern "C" {
 #endif
 
-extern void wrap_TextEditor_Redo(TextEditor* self);
-extern bool wrap_TextEditor_Render(TextEditor* self,const char* aTitle);
-extern void wrap_TextEditor_SelectAllOccurrencesOf(TextEditor* self,const char* aText,int aTextSize);
-extern void wrap_TextEditor_SelectNextOccurrenceOf(TextEditor* self,const char* aText,int aTextSize);
-extern void wrap_TextEditor_Undo(TextEditor* self);
+extern uintptr_t wrap_TextEditor_GetUserData(TextEditor* self,size_t line);
+extern void wrap_TextEditor_SetUserData(TextEditor* self,size_t line,uintptr_t data);
+extern void wrap_Notifications_Add(Notifications* self,Type type,const char* message);
+extern void wrap_TextDiff_Render(TextDiff* self,const char* title);
+extern void wrap_TextEditor_AddSquiggle(TextEditor* self,DocPos start,DocPos end,size_t type,ImU32 color);
+extern bool wrap_TextEditor_Render(TextEditor* self,const char* title);
+extern void wrap_TextEditor_SelectAllOccurrencesOf(TextEditor* self,const char* text);
+extern void wrap_TextEditor_SelectFirstOccurrenceOf(TextEditor* self,const char* text);
+extern void wrap_TextEditor_SelectNextOccurrenceOf(TextEditor* self,const char* text);
+extern void wrap_TextEditor_SelectToBrackets(TextEditor* self);
 
 #ifdef __cplusplus
 }

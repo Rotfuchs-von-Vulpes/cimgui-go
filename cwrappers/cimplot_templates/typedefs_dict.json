@@ -38,7 +38,7 @@
   "ImPlotLegendFlags": "int",
   "ImPlotLineFlags": "int",
   "ImPlotLocation": "int",
-  "ImPlotLocator": "void (*)(ImPlotTicker& ticker, const ImPlotRange& range, float pixels, bool vertical, ImPlotFormatter formatter, void* formatter_data);",
+  "ImPlotLocator": "typedef void (*)(ImPlotTicker& ticker, const ImPlotRange& range, float pixels, bool vertical, ImPlotFormatter formatter, void* formatter_data);",
   "ImPlotMarker": "int",
   "ImPlotMarkerInternal": "int",
   "ImPlotMouseTextFlags": "int",

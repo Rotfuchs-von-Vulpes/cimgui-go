@@ -72,6 +72,15 @@ func (self *AnnotationCollection) Append(pos, off imgui.Vec2, bg, fg uint32, cla
 	fmtFin()
 }
 
+func (self *AnnotationCollection) Append0(pos, off imgui.Vec2, bg, fg uint32, clamp bool, fmt string) {
+	selfArg, selfFin := self.Handle()
+	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
+	C.ImPlotAnnotationCollection_Append0(internal.ReinterpretCast[*C.ImPlotAnnotationCollection](selfArg), internal.ReinterpretCast[C.ImVec2_c](pos.ToC()), internal.ReinterpretCast[C.ImVec2_c](off.ToC()), C.ImU32(bg), C.ImU32(fg), C.bool(clamp), fmtArg)
+
+	selfFin()
+	fmtFin()
+}
+
 func (self *AnnotationCollection) Text(idx int32) string {
 	selfArg, selfFin := self.Handle()
 
@@ -554,6 +563,30 @@ func (self *ColormapData) SetKeyColor(cmap Colormap, idx int32, value uint32) {
 	selfFin()
 }
 
+//	        // ImU32 last = keys[0];
+//	        // Tables.push_back(last);
+//	        // int n = 1;
+//	        for (int i = 0; i < key_count-1; ++i) {
+//	            for (int s = 0; s < 255; ++s) {
+//	                ImU32 a = keys[i];
+//	                ImU32 b = keys[i+1];
+//	                ImU32 c = ImMixU32(a,b,s);
+//	                // if (c != last)
+//	                    Tables.push_back(c);
+//	                    // last = c;
+//	                    // n++;
+//	                //
+//	            }
+//	        }
+//	        ImU32 c = keys[key_count-1];
+//	        // if (c != last)
+//	            Tables.push_back(c);
+//	            // n++;
+//	        //
+//	        // TableSizes.push_back(n);
+//	        TableSizes.push_back(max_size);
+//	    }
+//	}
 func (self *ColormapData) AppendTable(cmap Colormap) {
 	selfArg, selfFin := self.Handle()
 	C.ImPlotColormapData__AppendTable(internal.ReinterpretCast[*C.ImPlotColormapData](selfArg), C.ImPlotColormap(cmap))
@@ -1081,6 +1114,7 @@ func (self *Spec) SetPropFloat(prop Prop, v float32) {
 	selfFin()
 }
 
+// // Set a property from a float pointer value.
 func (self *Spec) SetPropFloatPtr(prop Prop, v *float32) {
 	selfArg, selfFin := self.Handle()
 	vArg, vFin := internal.WrapNumberPtr[C.float, float32](v)
@@ -1132,6 +1166,7 @@ func (self *Spec) SetPropU32(prop Prop, v uint32) {
 	selfFin()
 }
 
+// // Set a property from a pointer value.
 func (self *Spec) SetPropU32Ptr(prop Prop, v *uint32) {
 	selfArg, selfFin := self.Handle()
 	vArg, vFin := internal.WrapNumberPtr[C.ImU32, uint32](v)
@@ -1155,6 +1190,7 @@ func (self *Spec) SetPropU8(prop Prop, v byte) {
 	selfFin()
 }
 
+// // Set a property from an ImVec4 value.
 func (self *Spec) SetPropVec4(prop Prop, v imgui.Vec4) {
 	selfArg, selfFin := self.Handle()
 	C.ImPlotSpec_SetProp_Vec4(internal.ReinterpretCast[*C.ImPlotSpec](selfArg), C.ImPlotProp(prop), internal.ReinterpretCast[C.ImVec4_c](v.ToC()))
@@ -1202,6 +1238,15 @@ func (self *TagCollection) Append(axis AxisEnum, value float64, bg, fg uint32, f
 	selfArg, selfFin := self.Handle()
 	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
 	C.wrap_ImPlotTagCollection_Append(internal.ReinterpretCast[*C.ImPlotTagCollection](selfArg), C.ImAxis(axis), C.double(value), C.ImU32(bg), C.ImU32(fg), fmtArg)
+
+	selfFin()
+	fmtFin()
+}
+
+func (self *TagCollection) Append0(axis AxisEnum, value float64, bg, fg uint32, fmt string) {
+	selfArg, selfFin := self.Handle()
+	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
+	C.ImPlotTagCollection_Append0(internal.ReinterpretCast[*C.ImPlotTagCollection](selfArg), C.ImAxis(axis), C.double(value), C.ImU32(bg), C.ImU32(fg), fmtArg)
 
 	selfFin()
 	fmtFin()
@@ -1390,6 +1435,11 @@ func AddColormapU32PtrV(name string, cols *uint32, size int32, qual bool) Colorm
 	return Colormap(C.ImPlot_AddColormap_U32Ptr(nameArg, colsArg, C.int(size), C.bool(qual)))
 }
 
+// Add a new colormap. The color data will be copied. The colormap can be used by pushing either the returned index or the
+// string name with PushColormap. The colormap name must be unique and the size must be greater than 1. You will receive
+// an assert otherwise! By default colormaps are considered to be qualitative (i.e. discrete). If you want to create a
+// continuous colormap, set #qual=false. This will treat the colors you provide as keys, and ImPlot will build a linearly
+// interpolated lookup table. The memory footprint of this table will be exactly ((size-1)*255+1)*4 bytes.
 // AddColormapVec4PtrV parameter default value hint:
 // qual: true
 func AddColormapVec4PtrV(name string, cols *imgui.Vec4, size int32, qual bool) Colormap {
@@ -1403,6 +1453,7 @@ func AddColormapVec4PtrV(name string, cols *imgui.Vec4, size int32, qual bool) C
 	return Colormap(C.ImPlot_AddColormap_Vec4Ptr(nameArg, internal.ReinterpretCast[*C.ImVec4_c](colsArg), C.int(size), C.bool(qual)))
 }
 
+// Draws multiline horizontal text centered.
 // AddTextCenteredV parameter default value hint:
 func AddTextCenteredV(DrawList *imgui.DrawList, top_center imgui.Vec2, col uint32, text_begin string) {
 	DrawListArg, DrawListFin := DrawList.Handle()
@@ -1413,6 +1464,7 @@ func AddTextCenteredV(DrawList *imgui.DrawList, top_center imgui.Vec2, col uint3
 	text_beginFin()
 }
 
+// Draws vertical text. The position is the bottom left of the text rect.
 // AddTextVerticalV parameter default value hint:
 func AddTextVerticalV(DrawList *imgui.DrawList, pos imgui.Vec2, col uint32, text_begin string) {
 	DrawListArg, DrawListFin := DrawList.Handle()
@@ -1423,6 +1475,7 @@ func AddTextVerticalV(DrawList *imgui.DrawList, pos imgui.Vec2, col uint32, text
 	text_beginFin()
 }
 
+// Adds or subtracts time from a timestamp. #count > 0 to add, < 0 to subtract.
 func AddTime(t PlotTime, unit TimeUnit, count int32) PlotTime {
 	return func() PlotTime {
 		out := C.ImPlot_AddTime(internal.ReinterpretCast[C.ImPlotTime](t.ToC()), C.ImPlotTimeUnit(unit), C.int(count))
@@ -1430,6 +1483,7 @@ func AddTime(t PlotTime, unit TimeUnit, count int32) PlotTime {
 	}()
 }
 
+// Returns true if all enabled axes are locked from user input.
 func AllAxesInputLocked(axes *Axis, count int32) bool {
 	axesArg, axesFin := axes.Handle()
 
@@ -1439,6 +1493,7 @@ func AllAxesInputLocked(axes *Axis, count int32) bool {
 	return C.ImPlot_AllAxesInputLocked(internal.ReinterpretCast[*C.ImPlotAxis](axesArg), C.int(count)) == C.bool(true)
 }
 
+// Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.
 // AnnotationBoolV parameter default value hint:
 // round: false
 func AnnotationBoolV(x, y float64, col imgui.Vec4, pix_offset imgui.Vec2, clamp, round bool) {
@@ -1448,6 +1503,13 @@ func AnnotationBoolV(x, y float64, col imgui.Vec4, pix_offset imgui.Vec2, clamp,
 func AnnotationStr(x, y float64, col imgui.Vec4, pix_offset imgui.Vec2, clamp bool, fmt string) {
 	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
 	C.wrap_ImPlot_Annotation_Str(C.double(x), C.double(y), internal.ReinterpretCast[C.ImVec4_c](col.ToC()), internal.ReinterpretCast[C.ImVec2_c](pix_offset.ToC()), C.bool(clamp), fmtArg)
+
+	fmtFin()
+}
+
+func AnnotationStr0(x, y float64, col imgui.Vec4, pix_offset imgui.Vec2, clamp bool, fmt string) {
+	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
+	C.ImPlot_Annotation_Str0(C.double(x), C.double(y), internal.ReinterpretCast[C.ImVec4_c](col.ToC()), internal.ReinterpretCast[C.ImVec2_c](pix_offset.ToC()), C.bool(clamp), fmtArg)
 
 	fmtFin()
 }
@@ -1470,6 +1532,7 @@ func AnyAxesHovered(axes *Axis, count int32) bool {
 	return C.ImPlot_AnyAxesHovered(internal.ReinterpretCast[*C.ImPlotAxis](axesArg), C.int(count)) == C.bool(true)
 }
 
+// Returns true if any enabled axis is locked from user input.
 func AnyAxesInputLocked(axes *Axis, count int32) bool {
 	axesArg, axesFin := axes.Handle()
 
@@ -1479,6 +1542,8 @@ func AnyAxesInputLocked(axes *Axis, count int32) bool {
 	return C.ImPlot_AnyAxesInputLocked(internal.ReinterpretCast[*C.ImPlotAxis](axesArg), C.int(count)) == C.bool(true)
 }
 
+// Align axis padding over multiple plots in a single row or column. #group_id must
+// be unique. If this function returns true, EndAlignedPlots() must be called.
 // BeginAlignedPlotsV parameter default value hint:
 // vertical: true
 func BeginAlignedPlotsV(group_id string, vertical bool) bool {
@@ -1490,12 +1555,14 @@ func BeginAlignedPlotsV(group_id string, vertical bool) bool {
 	return C.ImPlot_BeginAlignedPlots(group_idArg, C.bool(vertical)) == C.bool(true)
 }
 
+// Turns the current plot's X-axis into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!
 // BeginDragDropSourceAxisV parameter default value hint:
 // flags: 0
 func BeginDragDropSourceAxisV(axis AxisEnum, flags imgui.DragDropFlags) bool {
 	return C.ImPlot_BeginDragDropSourceAxis(C.ImAxis(axis), C.ImGuiDragDropFlags(flags)) == C.bool(true)
 }
 
+// Turns an item in the current plot's legend into drag and drop source. Don't forget to call EndDragDropSource!
 // BeginDragDropSourceItemV parameter default value hint:
 // flags: 0
 func BeginDragDropSourceItemV(label_id string, flags imgui.DragDropFlags) bool {
@@ -1507,24 +1574,29 @@ func BeginDragDropSourceItemV(label_id string, flags imgui.DragDropFlags) bool {
 	return C.ImPlot_BeginDragDropSourceItem(label_idArg, C.ImGuiDragDropFlags(flags)) == C.bool(true)
 }
 
+// Turns the current plot's plotting area into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!
 // BeginDragDropSourcePlotV parameter default value hint:
 // flags: 0
 func BeginDragDropSourcePlotV(flags imgui.DragDropFlags) bool {
 	return C.ImPlot_BeginDragDropSourcePlot(C.ImGuiDragDropFlags(flags)) == C.bool(true)
 }
 
+// Turns the current plot's X-axis into a drag and drop target. Don't forget to call EndDragDropTarget!
 func BeginDragDropTargetAxis(axis AxisEnum) bool {
 	return C.ImPlot_BeginDragDropTargetAxis(C.ImAxis(axis)) == C.bool(true)
 }
 
+// Turns the current plot's legend into a drag and drop target. Don't forget to call EndDragDropTarget!
 func BeginDragDropTargetLegend() bool {
 	return C.ImPlot_BeginDragDropTargetLegend() == C.bool(true)
 }
 
+// Turns the current plot's plotting area into a drag and drop target. Don't forget to call EndDragDropTarget!
 func BeginDragDropTargetPlot() bool {
 	return C.ImPlot_BeginDragDropTargetPlot() == C.bool(true)
 }
 
+// Begins a new item. Returns false if the item should not be plotted. Pushes PlotClipRect.
 // BeginItemV parameter default value hint:
 // spec: ImPlotSpec()
 // item_col: IMPLOT_AUTO_COL
@@ -1540,6 +1612,7 @@ func BeginItemV(label_id string, spec Spec, item_col imgui.Vec4, item_mkr Marker
 	return C.ImPlot_BeginItem(label_idArg, internal.ReinterpretCast[C.ImPlotSpec](specArg), internal.ReinterpretCast[C.ImVec4_c](item_col.ToC()), C.ImPlotMarker(item_mkr)) == C.bool(true)
 }
 
+// Begin a popup for a legend entry.
 // BeginLegendPopupV parameter default value hint:
 // mouse_button: 1
 func BeginLegendPopupV(label_id string, mouse_button imgui.MouseButton) bool {
@@ -1551,6 +1624,23 @@ func BeginLegendPopupV(label_id string, mouse_button imgui.MouseButton) bool {
 	return C.ImPlot_BeginLegendPopup(label_idArg, C.ImGuiMouseButton(mouse_button)) == C.bool(true)
 }
 
+// Starts a 2D plotting context. If this function returns true, EndPlot() MUST
+// be called! You are encouraged to use the following convention:
+//
+// if (BeginPlot(...))
+//
+//	PlotLine(...);
+//	...
+//	EndPlot();
+//
+// Important notes:
+//
+//   - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
+//     collisions or don't want to display a title in the plot, use double hashes
+//     (e.g. "MyPlot##HiddenIdText" or "##NoTitle").
+//   - #size is the **frame** size of the plot widget, not the plot area. The default
+//     size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.
+//
 // BeginPlotV parameter default value hint:
 // size: ImVec2(-1,0)
 // flags: 0
@@ -1580,6 +1670,13 @@ func BeginSubplotsV(title_id string, rows, cols int32, size imgui.Vec2, flags Su
 	return C.ImPlot_BeginSubplots(title_idArg, C.int(rows), C.int(cols), internal.ReinterpretCast[C.ImVec2_c](size.ToC()), C.ImPlotSubplotFlags(flags), row_ratiosArg, col_ratiosArg) == C.bool(true)
 }
 
+// When items in a plot sample their color from a colormap, the color is cached and does not change
+// unless explicitly overridden. Therefore, if you change the colormap after the item has already been plotted,
+// item colors will NOT update. If you need item colors to resample the new colormap, then use this
+// function to bust the cached colors. If #plot_title_id is nullptr, then every item in EVERY existing plot
+// will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the
+// latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever
+// need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).
 // BustColorCacheV parameter default value hint:
 // plot_title_id: nullptr
 func BustColorCacheV(plot_title_id string) {
@@ -1589,18 +1686,22 @@ func BustColorCacheV(plot_title_id string) {
 	plot_title_idFin()
 }
 
+// Busts the cache for every item for every plot in the current context.
 func BustItemCache() {
 	C.ImPlot_BustItemCache()
 }
 
+// Busts the cache for every plot in the current context
 func BustPlotCache() {
 	C.ImPlot_BustPlotCache()
 }
 
+// Lightens or darkens a color for hover
 func CalcHoverColor(col uint32) uint32 {
 	return uint32(C.ImPlot_CalcHoverColor(C.ImU32(col)))
 }
 
+// Calculates the bounding box size of a legend _before_ clipping.
 func CalcLegendSize(items *ItemGroup, pad, spacing imgui.Vec2, vertical bool) imgui.Vec2 {
 	itemsArg, itemsFin := items.Handle()
 
@@ -1617,10 +1718,12 @@ func CalcTextColorU32(bg uint32) uint32 {
 	return uint32(C.ImPlot_CalcTextColor_U32(C.ImU32(bg)))
 }
 
+// Returns white or black text given background color
 func CalcTextColorVec4(bg imgui.Vec4) uint32 {
 	return uint32(C.ImPlot_CalcTextColor_Vec4(internal.ReinterpretCast[C.ImVec4_c](bg.ToC())))
 }
 
+// Calculates the size of vertical text
 func CalcTextSizeVertical(text string) imgui.Vec2 {
 	textArg, textFin := internal.WrapString[C.char](text)
 
@@ -1633,10 +1736,12 @@ func CalcTextSizeVertical(text string) imgui.Vec2 {
 	}()
 }
 
+// Cancels a the current plot box selection.
 func CancelPlotSelection() {
 	C.ImPlot_CancelPlotSelection()
 }
 
+// Rounds a timestamp up to the nearest unit.
 func CeilTime(t PlotTime, unit TimeUnit) PlotTime {
 	return func() PlotTime {
 		out := C.ImPlot_CeilTime(internal.ReinterpretCast[C.ImPlotTime](t.ToC()), C.ImPlotTimeUnit(unit))
@@ -1644,6 +1749,7 @@ func CeilTime(t PlotTime, unit TimeUnit) PlotTime {
 	}()
 }
 
+// Clamps a label position so that it fits a rect defined by Min/Max
 func ClampLabelPos(pos, size, Min, Max imgui.Vec2) imgui.Vec2 {
 	return func() imgui.Vec2 {
 		out := C.ImPlot_ClampLabelPos(internal.ReinterpretCast[C.ImVec2_c](pos.ToC()), internal.ReinterpretCast[C.ImVec2_c](size.ToC()), internal.ReinterpretCast[C.ImVec2_c](Min.ToC()), internal.ReinterpretCast[C.ImVec2_c](Max.ToC()))
@@ -1651,6 +1757,7 @@ func ClampLabelPos(pos, size, Min, Max imgui.Vec2) imgui.Vec2 {
 	}()
 }
 
+// Clips calculated legend size
 func ClampLegendRect(legend_rect *imgui.Rect, outer_rect imgui.Rect, pad imgui.Vec2) bool {
 	legend_rectArg, legend_rectFin := internal.Wrap(legend_rect)
 
@@ -1660,6 +1767,7 @@ func ClampLegendRect(legend_rect *imgui.Rect, outer_rect imgui.Rect, pad imgui.V
 	return C.ImPlot_ClampLegendRect(internal.ReinterpretCast[*C.ImRect_c](legend_rectArg), internal.ReinterpretCast[C.ImRect_c](outer_rect.ToC()), internal.ReinterpretCast[C.ImVec2_c](pad.ToC())) == C.bool(true)
 }
 
+// Shows a button with a colormap gradient background.
 // ColormapButtonV parameter default value hint:
 // size: ImVec2(0,0)
 // cmap: IMPLOT_AUTO
@@ -1676,6 +1784,7 @@ func ColormapIcon(cmap Colormap) {
 	C.ImPlot_ColormapIcon(C.ImPlotColormap(cmap))
 }
 
+// Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. "##NoLabel"). If scale_min > scale_max, the scale to color mapping will be reversed.
 // ColormapScaleV parameter default value hint:
 // size: ImVec2(0,0)
 // format: "%g"
@@ -1690,6 +1799,7 @@ func ColormapScaleV(label string, scale_min, scale_max float64, size imgui.Vec2,
 	formatFin()
 }
 
+// Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].
 // ColormapSliderV parameter default value hint:
 // out: nullptr
 // format: ""
@@ -1709,6 +1819,7 @@ func ColormapSliderV(label string, t *float32, out *imgui.Vec4, format string, c
 	return C.ImPlot_ColormapSlider(labelArg, tArg, internal.ReinterpretCast[*C.ImVec4_c](outArg), formatArg, C.ImPlotColormap(cmap)) == C.bool(true)
 }
 
+// Combines the date of one timestamp with the time-of-day of another timestamp.
 func CombineDateTime(date_part, time_part PlotTime) PlotTime {
 	return func() PlotTime {
 		out := C.ImPlot_CombineDateTime(internal.ReinterpretCast[C.ImPlotTime](date_part.ToC()), internal.ReinterpretCast[C.ImPlotTime](time_part.ToC()))
@@ -1716,10 +1827,12 @@ func CombineDateTime(date_part, time_part PlotTime) PlotTime {
 	}()
 }
 
+// Creates a new ImPlot context. Call this after ImGui::CreateContext.
 func CreateContext() *Context {
 	return NewContextFromC(C.ImPlot_CreateContext())
 }
 
+// Destroys an ImPlot context. Call this before ImGui::DestroyContext. nullptr = destroy current context.
 // DestroyContextV parameter default value hint:
 // ctx: nullptr
 func DestroyContextV(ctx *Context) {
@@ -1729,6 +1842,7 @@ func DestroyContextV(ctx *Context) {
 	ctxFin()
 }
 
+// Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text.
 // DragLineXV parameter default value hint:
 // thickness: 1
 // flags: 0
@@ -1750,6 +1864,7 @@ func DragLineXV(id int32, x *float64, col imgui.Vec4, thickness float32, flags D
 	return C.ImPlot_DragLineX(C.int(id), xArg, internal.ReinterpretCast[C.ImVec4_c](col.ToC()), C.float(thickness), C.ImPlotDragToolFlags(flags), out_clickedArg, out_hoveredArg, out_heldArg) == C.bool(true)
 }
 
+// Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text.
 // DragLineYV parameter default value hint:
 // thickness: 1
 // flags: 0
@@ -1771,6 +1886,7 @@ func DragLineYV(id int32, y *float64, col imgui.Vec4, thickness float32, flags D
 	return C.ImPlot_DragLineY(C.int(id), yArg, internal.ReinterpretCast[C.ImVec4_c](col.ToC()), C.float(thickness), C.ImPlotDragToolFlags(flags), out_clickedArg, out_hoveredArg, out_heldArg) == C.bool(true)
 }
 
+// Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.
 // DragPointV parameter default value hint:
 // size: 4
 // flags: 0
@@ -1794,6 +1910,7 @@ func DragPointV(id int32, x, y *float64, col imgui.Vec4, size float32, flags Dra
 	return C.ImPlot_DragPoint(C.int(id), xArg, yArg, internal.ReinterpretCast[C.ImVec4_c](col.ToC()), C.float(size), C.ImPlotDragToolFlags(flags), out_clickedArg, out_hoveredArg, out_heldArg) == C.bool(true)
 }
 
+// Shows a draggable and resizeable rectangle.
 // DragRectV parameter default value hint:
 // flags: 0
 // out_clicked: nullptr
@@ -1820,50 +1937,64 @@ func DragRectV(id int32, x1, y1, x2, y2 *float64, col imgui.Vec4, flags DragTool
 	return C.ImPlot_DragRect(C.int(id), x1Arg, y1Arg, x2Arg, y2Arg, internal.ReinterpretCast[C.ImVec4_c](col.ToC()), C.ImPlotDragToolFlags(flags), out_clickedArg, out_hoveredArg, out_heldArg) == C.bool(true)
 }
 
+// Only call EndAlignedPlots() if BeginAlignedPlots() returns true!
 func EndAlignedPlots() {
 	C.ImPlot_EndAlignedPlots()
 }
 
+// Ends a drag and drop source (currently just an alias for ImGui::EndDragDropSource).
 func EndDragDropSource() {
 	C.ImPlot_EndDragDropSource()
 }
 
+// Ends a drag and drop target (currently just an alias for ImGui::EndDragDropTarget).
 func EndDragDropTarget() {
 	C.ImPlot_EndDragDropTarget()
 }
 
+// Ends an item (call only if BeginItem returns true). Pops PlotClipRect.
 func EndItem() {
 	C.ImPlot_EndItem()
 }
 
+// End a popup for a legend entry.
 func EndLegendPopup() {
 	C.ImPlot_EndLegendPopup()
 }
 
+// Only call EndPlot() if BeginPlot() returns true! Typically called at the end
+// of an if statement conditioned on BeginPlot(). See example above.
 func EndPlot() {
 	C.ImPlot_EndPlot()
 }
 
+// Only call EndSubplots() if BeginSubplots() returns true! Typically called at the end
+// of an if statement conditioned on BeginSubplots(). See example above.
 func EndSubplots() {
 	C.ImPlot_EndSubplots()
 }
 
+// Extends the current plot's axes so that it encompasses point p
 func FitPoint(p PlotPoint) {
 	C.ImPlot_FitPoint(internal.ReinterpretCast[C.ImPlotPoint](p.ToC()))
 }
 
+// Extends the current plot's axes so that it encompasses a vertical line at x
 func FitPointX(x float64) {
 	C.ImPlot_FitPointX(C.double(x))
 }
 
+// Extends the current plot's axes so that it encompasses a horizontal line at y
 func FitPointY(y float64) {
 	C.ImPlot_FitPointY(C.double(y))
 }
 
+// Returns true if the user has requested data to be fit.
 func FitThisFrame() bool {
 	return C.ImPlot_FitThisFrame() == C.bool(true)
 }
 
+// Rounds a timestamp down to nearest unit.
 func FloorTime(t PlotTime, unit TimeUnit) PlotTime {
 	return func() PlotTime {
 		out := C.ImPlot_FloorTime(internal.ReinterpretCast[C.ImPlotTime](t.ToC()), C.ImPlotTimeUnit(unit))
@@ -1871,6 +2002,7 @@ func FloorTime(t PlotTime, unit TimeUnit) PlotTime {
 	}()
 }
 
+// Formats the date part of timestamp t into a buffer according to #fmt
 func FormatDate(t PlotTime, buffer string, size int32, fmt DateFmt, use_iso_8601 bool) int32 {
 	bufferArg, bufferFin := internal.WrapString[C.char](buffer)
 
@@ -1880,6 +2012,7 @@ func FormatDate(t PlotTime, buffer string, size int32, fmt DateFmt, use_iso_8601
 	return int32(C.ImPlot_FormatDate(internal.ReinterpretCast[C.ImPlotTime](t.ToC()), bufferArg, C.int(size), C.ImPlotDateFmt(fmt), C.bool(use_iso_8601)))
 }
 
+// Formats the time and/or date parts of a timestamp t into a buffer according to #fmt
 func FormatDateTime(t PlotTime, buffer string, size int32, fmt DateTimeSpec) int32 {
 	bufferArg, bufferFin := internal.WrapString[C.char](buffer)
 	fmtArg, fmtFin := fmt.C()
@@ -1891,6 +2024,7 @@ func FormatDateTime(t PlotTime, buffer string, size int32, fmt DateTimeSpec) int
 	return int32(C.ImPlot_FormatDateTime(internal.ReinterpretCast[C.ImPlotTime](t.ToC()), bufferArg, C.int(size), internal.ReinterpretCast[C.ImPlotDateTimeSpec](fmtArg)))
 }
 
+// Formats the time part of timestamp t into a buffer according to #fmt
 func FormatTime(t PlotTime, buffer string, size int32, fmt TimeFmt, use_24_hr_clk bool) int32 {
 	bufferArg, bufferFin := internal.WrapString[C.char](buffer)
 
@@ -1927,6 +2061,7 @@ func FormatterTime(noname1 float64, buff string, size int32, data uintptr) int32
 	return int32(C.wrap_ImPlot_Formatter_Time(C.double(noname1), buffArg, C.int(size), C.uintptr_t(data)))
 }
 
+// Returns the automatically deduced style color
 func GetAutoColor(idx Col) imgui.Vec4 {
 	return func() imgui.Vec4 {
 		out := C.ImPlot_GetAutoColor(C.ImPlotCol(idx))
@@ -1934,6 +2069,7 @@ func GetAutoColor(idx Col) imgui.Vec4 {
 	}()
 }
 
+// Returns a color from a colormap given an index >= 0 (modulo will be performed).
 // GetColormapColorV parameter default value hint:
 // cmap: IMPLOT_AUTO
 func GetColormapColorV(idx int32, cmap Colormap) imgui.Vec4 {
@@ -1943,14 +2079,17 @@ func GetColormapColorV(idx int32, cmap Colormap) imgui.Vec4 {
 	}()
 }
 
+// Returns a color from the Color map given an index >= 0 (modulo will be performed).
 func GetColormapColorU32(idx int32, cmap Colormap) uint32 {
 	return uint32(C.ImPlot_GetColormapColorU32(C.int(idx), C.ImPlotColormap(cmap)))
 }
 
+// Returns the number of available colormaps (i.e. the built-in + user-added count).
 func GetColormapCount() int32 {
 	return int32(C.ImPlot_GetColormapCount())
 }
 
+// Returns an index number for a colormap given a valid string name. Returns -1 if name is invalid.
 func GetColormapIndex(name string) Colormap {
 	nameArg, nameFin := internal.WrapString[C.char](name)
 
@@ -1960,36 +2099,44 @@ func GetColormapIndex(name string) Colormap {
 	return Colormap(C.ImPlot_GetColormapIndex(nameArg))
 }
 
+// Returns a null terminated string name for a colormap given an index. Returns nullptr if index is invalid.
 func GetColormapName(cmap Colormap) string {
 	return C.GoString(C.ImPlot_GetColormapName(C.ImPlotColormap(cmap)))
 }
 
+// Returns the size of a colormap.
 // GetColormapSizeV parameter default value hint:
 // cmap: IMPLOT_AUTO
 func GetColormapSizeV(cmap Colormap) int32 {
 	return int32(C.ImPlot_GetColormapSize(C.ImPlotColormap(cmap)))
 }
 
+// Returns the current ImPlot context. nullptr if no context has ben set.
 func GetCurrentContext() *Context {
 	return NewContextFromC(C.ImPlot_GetCurrentContext())
 }
 
+// Gets the current item.
 func GetCurrentItem() *Item {
 	return NewItemFromC(C.ImPlot_GetCurrentItem())
 }
 
+// Gets the current plot from the current ImPlotContext
 func GetCurrentPlot() *Plot {
 	return NewPlotFromC(C.ImPlot_GetCurrentPlot())
 }
 
+// Returns the number of days in a month, accounting for Feb. leap years. #month is zero indexed.
 func GetDaysInMonth(year, month int32) int32 {
 	return int32(C.ImPlot_GetDaysInMonth(C.int(year), C.int(month)))
 }
 
+// Provides access to input mapping structure for permanent modifications to controls for pan, select, etc.
 func GetInputMap() *InputMap {
 	return NewInputMapFromC(C.ImPlot_GetInputMap())
 }
 
+// Get a plot item from the current plot.
 func GetItem(label_id string) *Item {
 	label_idArg, label_idFin := internal.WrapString[C.char](label_id)
 
@@ -1999,10 +2146,12 @@ func GetItem(label_id string) *Item {
 	return NewItemFromC(C.ImPlot_GetItem(label_idArg))
 }
 
+// Get styling data for next item (call between Begin/EndItem)
 func GetItemData() *NextItemData {
 	return NewNextItemDataFromC(C.ImPlot_GetItemData())
 }
 
+// Gets the last item primary color (i.e. its legend icon color)
 func GetLastItemColor() imgui.Vec4 {
 	return func() imgui.Vec4 {
 		out := C.ImPlot_GetLastItemColor()
@@ -2010,6 +2159,7 @@ func GetLastItemColor() imgui.Vec4 {
 	}()
 }
 
+// Gets the position of an inner rect that is located inside of an outer rect according to an ImPlotLocation and padding amount.
 // GetLocationPosV parameter default value hint:
 // pad: ImVec2(0,0)
 func GetLocationPosV(outer_rect imgui.Rect, inner_size imgui.Vec2, location Location, pad imgui.Vec2) imgui.Vec2 {
@@ -2019,14 +2169,17 @@ func GetLocationPosV(outer_rect imgui.Rect, inner_size imgui.Vec2, location Loca
 	}()
 }
 
+// Returns the null terminated string name for an ImPlotMarker.
 func GetMarkerName(idx Marker) string {
 	return C.GoString(C.ImPlot_GetMarkerName(C.ImPlotMarker(idx)))
 }
 
+// Get month component from timestamp [0-11]
 func GetMonth(t PlotTime) int32 {
 	return int32(C.ImPlot_GetMonth(internal.ReinterpretCast[C.ImPlotTime](t.ToC())))
 }
 
+// Gets a plot from the current ImPlotContext
 func GetPlot(title string) *Plot {
 	titleArg, titleFin := internal.WrapString[C.char](title)
 
@@ -2036,10 +2189,12 @@ func GetPlot(title string) *Plot {
 	return NewPlotFromC(C.ImPlot_GetPlot(titleArg))
 }
 
+// Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.
 func GetPlotDrawList() *imgui.DrawList {
 	return imgui.NewDrawListFromC(C.ImPlot_GetPlotDrawList())
 }
 
+// Returns the current plot axis range.
 // GetPlotLimitsV parameter default value hint:
 // x_axis: IMPLOT_AUTO
 // y_axis: IMPLOT_AUTO
@@ -2050,6 +2205,7 @@ func GetPlotLimitsV(x_axis, y_axis AxisEnum) Rect {
 	}())
 }
 
+// Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.
 // GetPlotMousePosV parameter default value hint:
 // x_axis: IMPLOT_AUTO
 // y_axis: IMPLOT_AUTO
@@ -2060,10 +2216,12 @@ func GetPlotMousePosV(x_axis, y_axis AxisEnum) PlotPoint {
 	}()
 }
 
+// Get the current Plot position (top-left) in pixels.
 func GetPlotPos() imgui.Vec2 {
 	return func() imgui.Vec2 { out := C.ImPlot_GetPlotPos(); return *(&imgui.Vec2{}).FromC(unsafe.Pointer(&out)) }()
 }
 
+// Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.
 // GetPlotSelectionV parameter default value hint:
 // x_axis: IMPLOT_AUTO
 // y_axis: IMPLOT_AUTO
@@ -2074,14 +2232,17 @@ func GetPlotSelectionV(x_axis, y_axis AxisEnum) Rect {
 	}())
 }
 
+// Get the current Plot size in pixels.
 func GetPlotSize() imgui.Vec2 {
 	return func() imgui.Vec2 { out := C.ImPlot_GetPlotSize(); return *(&imgui.Vec2{}).FromC(unsafe.Pointer(&out)) }()
 }
 
+// Provides access to plot style structure for permanent modifications to colors, sizes, etc.
 func GetStyle() *Style {
 	return NewStyleFromC(C.ImPlot_GetStyle())
 }
 
+// Returns the null terminated string name for an ImPlotCol.
 func GetStyleColorName(idx Col) string {
 	return C.GoString(C.ImPlot_GetStyleColorName(C.ImPlotCol(idx)))
 }
@@ -2090,6 +2251,7 @@ func GetStyleColorU32(idx Col) uint32 {
 	return uint32(C.ImPlot_GetStyleColorU32(C.ImPlotCol(idx)))
 }
 
+// Returns the style color whether it is automatic or custom set
 func GetStyleColorVec4(idx Col) imgui.Vec4 {
 	return func() imgui.Vec4 {
 		out := C.ImPlot_GetStyleColorVec4(C.ImPlotCol(idx))
@@ -2097,10 +2259,13 @@ func GetStyleColorVec4(idx Col) imgui.Vec4 {
 	}()
 }
 
+// Get year component from timestamp [1970-3000]
 func GetYear(t PlotTime) int32 {
 	return int32(C.ImPlot_GetYear(internal.ReinterpretCast[C.ImPlotTime](t.ToC())))
 }
 
+// Hides or shows the next plot item (i.e. as if it were toggled from the legend).
+// Use ImPlotCond_Always if you need to forcefully set this every frame.
 // HideNextItemV parameter default value hint:
 // hidden: true
 // cond: ImPlotCond_Once
@@ -2108,12 +2273,14 @@ func HideNextItemV(hidden bool, cond Cond) {
 	C.ImPlot_HideNextItem(C.bool(hidden), C.ImPlotCond(cond))
 }
 
+// True if two numbers are approximately equal using units in the last place.
 // ImAlmostEqualV parameter default value hint:
 // ulp: 2
 func ImAlmostEqualV(v1, v2 float64, ulp int32) bool {
 	return C.ImPlot_ImAlmostEqual(C.double(v1), C.double(v2), C.int(ulp)) == C.bool(true)
 }
 
+// Set alpha channel of 32-bit color from float in range [0.0 1.0]
 func ImAlphaU32(col uint32, alpha float32) uint32 {
 	return uint32(C.ImPlot_ImAlphaU32(C.ImU32(col), C.float(alpha)))
 }
@@ -2126,22 +2293,27 @@ func ImAsinhdouble(x float64) float64 {
 	return float64(C.ImPlot_ImAsinh_double(C.double(x)))
 }
 
+// Turns infinity to floating point maximums
 func ImConstrainInf(val float64) float64 {
 	return float64(C.ImPlot_ImConstrainInf(C.double(val)))
 }
 
+// Turns numbers less than or equal to 0 to 0.001 (sort of arbitrary, is there a better way?)
 func ImConstrainLog(val float64) float64 {
 	return float64(C.ImPlot_ImConstrainLog(C.double(val)))
 }
 
+// Turns NANs to 0s
 func ImConstrainNan(val float64) float64 {
 	return float64(C.ImPlot_ImConstrainNan(C.double(val)))
 }
 
+// Turns numbers less than 0 to zero
 func ImConstrainTime(val float64) float64 {
 	return float64(C.ImPlot_ImConstrainTime(C.double(val)))
 }
 
+// Lerp across an array of 32-bit colors given t in [0.0 1.0]
 func ImLerpU32(colors *uint32, size int32, t float32) uint32 {
 	colorsArg, colorsFin := internal.WrapNumberPtr[C.ImU32, uint32](colors)
 
@@ -2151,6 +2323,7 @@ func ImLerpU32(colors *uint32, size int32, t float32) uint32 {
 	return uint32(C.ImPlot_ImLerpU32(colorsArg, C.int(size), C.float(t)))
 }
 
+// Computes the common (base-10) logarithm
 func ImLog10Float(x float32) float32 {
 	return float32(C.ImPlot_ImLog10_Float(C.float(x)))
 }
@@ -2539,14 +2712,17 @@ func ImMinMaxArraydoublePtr(values *float64, count int32, min_out, max_out *floa
 	max_outFin()
 }
 
+// Mix color a and b by factor s in [0 256]
 func ImMixU32(a, b, s uint32) uint32 {
 	return uint32(C.ImPlot_ImMixU32(C.ImU32(a), C.ImU32(b), C.ImU32(s)))
 }
 
+// Returns true if val is NAN
 func ImNan(val float64) bool {
 	return C.ImPlot_ImNan(C.double(val)) == C.bool(true)
 }
 
+// Returns true if val is NAN or INFINITY
 func ImNanOrInf(val float64) bool {
 	return C.ImPlot_ImNanOrInf(C.double(val)) == C.bool(true)
 }
@@ -2591,6 +2767,7 @@ func ImOverlapsdouble(min_a, max_a, min_b, max_b float64) bool {
 	return C.ImPlot_ImOverlaps_double(C.double(min_a), C.double(max_a), C.double(min_b), C.double(max_b)) == C.bool(true)
 }
 
+// Returns always positive modulo (assumes r != 0)
 func ImPosMod(l, r int32) int32 {
 	return int32(C.ImPlot_ImPosMod(C.int(l), C.int(r)))
 }
@@ -2863,6 +3040,7 @@ func ImSumdoublePtr(values *float64, count int32) float64 {
 	return float64(C.ImPlot_ImSum_doublePtr(valuesArg, C.int(count)))
 }
 
+// Initializes an ImPlotContext
 func Initialize(ctx *Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImPlot_Initialize(internal.ReinterpretCast[*C.ImPlotContext](ctxArg))
@@ -2870,6 +3048,7 @@ func Initialize(ctx *Context) {
 	ctxFin()
 }
 
+// Returns the intersection point of two lines A and B (assumes they are not parallel!)
 func Intersection(a1, a2, b1, b2 imgui.Vec2) imgui.Vec2 {
 	return func() imgui.Vec2 {
 		out := C.ImPlot_Intersection(internal.ReinterpretCast[C.ImVec2_c](a1.ToC()), internal.ReinterpretCast[C.ImVec2_c](a2.ToC()), internal.ReinterpretCast[C.ImVec2_c](b1.ToC()), internal.ReinterpretCast[C.ImVec2_c](b2.ToC()))
@@ -2877,22 +3056,27 @@ func Intersection(a1, a2, b1, b2 imgui.Vec2) imgui.Vec2 {
 	}()
 }
 
+// Returns true if the axis label area in the current plot is hovered.
 func IsAxisHovered(axis AxisEnum) bool {
 	return C.ImPlot_IsAxisHovered(C.ImAxis(axis)) == C.bool(true)
 }
 
+// Returns true if a style color is set to be automatically determined
 func IsColorAutoPlotCol(idx Col) bool {
 	return C.ImPlot_IsColorAuto_PlotCol(C.ImPlotCol(idx)) == C.bool(true)
 }
 
+// Returns true if a color is set to be automatically determined
 func IsColorAutoVec4(col imgui.Vec4) bool {
 	return C.ImPlot_IsColorAuto_Vec4(internal.ReinterpretCast[C.ImVec4_c](col.ToC())) == C.bool(true)
 }
 
+// Returns true if year is leap year (366 days long)
 func IsLeapYear(year int32) bool {
 	return C.ImPlot_IsLeapYear(C.int(year)) == C.bool(true)
 }
 
+// Returns true if a plot item legend entry is hovered.
 func IsLegendEntryHovered(label_id string) bool {
 	label_idArg, label_idFin := internal.WrapString[C.char](label_id)
 
@@ -2902,14 +3086,17 @@ func IsLegendEntryHovered(label_id string) bool {
 	return C.ImPlot_IsLegendEntryHovered(label_idArg) == C.bool(true)
 }
 
+// Returns true if the plot area in the current plot is hovered.
 func IsPlotHovered() bool {
 	return C.ImPlot_IsPlotHovered() == C.bool(true)
 }
 
+// Returns true if the current plot is being box selected.
 func IsPlotSelected() bool {
 	return C.ImPlot_IsPlotSelected() == C.bool(true)
 }
 
+// Returns true if the bounding frame of a subplot is hovered.
 func IsSubplotsHovered() bool {
 	return C.ImPlot_IsSubplotsHovered() == C.bool(true)
 }
@@ -2918,10 +3105,12 @@ func ItemIconU32(col uint32) {
 	C.ImPlot_ItemIcon_U32(C.ImU32(col))
 }
 
+// Render icons similar to those that appear in legends (nifty for data lists).
 func ItemIconVec4(col imgui.Vec4) {
 	C.ImPlot_ItemIcon_Vec4(internal.ReinterpretCast[C.ImVec4_c](col.ToC()))
 }
 
+// Create a a string label for a an axis value
 // LabelAxisValueV parameter default value hint:
 // round: false
 func LabelAxisValueV(axis Axis, value float64, buff string, size int32, round bool) {
@@ -2977,6 +3166,8 @@ func LocatorTime(ticker *Ticker, rangeArg Range, pixels float32, vertical bool, 
 	formatterFin()
 }
 
+// Make a timestamp from time components.
+// year[1970-3000], month[0-11], day[1-31], hour[0-23], min[0-59], sec[0-59], us[0,999999]
 // MakeTimeV parameter default value hint:
 // month: 0
 // day: 1
@@ -2991,6 +3182,7 @@ func MakeTimeV(year, month, day, hour, min, sec, us int32) PlotTime {
 	}()
 }
 
+// Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.
 // MapInputDefaultV parameter default value hint:
 // dst: nullptr
 func MapInputDefaultV(dst *InputMap) {
@@ -3000,6 +3192,7 @@ func MapInputDefaultV(dst *InputMap) {
 	dstFin()
 }
 
+// Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.
 // MapInputReverseV parameter default value hint:
 // dst: nullptr
 func MapInputReverseV(dst *InputMap) {
@@ -3009,6 +3202,8 @@ func MapInputReverseV(dst *InputMap) {
 	dstFin()
 }
 
+// Returns the next color from the current colormap and advances the colormap for the current plot.
+// Can also be used with no return value to skip colors if desired. You need to call this between Begin/EndPlot!
 func NextColormapColor() imgui.Vec4 {
 	return func() imgui.Vec4 {
 		out := C.ImPlot_NextColormapColor()
@@ -3016,26 +3211,32 @@ func NextColormapColor() imgui.Vec4 {
 	}()
 }
 
+// Returns the next unused colormap color and advances the colormap. Can be used to skip colors if desired.
 func NextColormapColorU32() uint32 {
 	return uint32(C.ImPlot_NextColormapColorU32())
 }
 
+// Returns the next marker and advances the marker for the current plot. You need to call this between Begin/EndPlot!
 func NextMarker() Marker {
 	return Marker(C.ImPlot_NextMarker())
 }
 
+// Rounds x to powers of 2,5 and 10 for generating axis labels (from Graphics Gems 1 Chapter 11.2)
 func NiceNum(x float64, round bool) float64 {
 	return float64(C.ImPlot_NiceNum(C.double(x), C.bool(round)))
 }
 
+// Get the current time as a timestamp.
 func Now() PlotTime {
 	return func() PlotTime { out := C.ImPlot_Now(); return *(&PlotTime{}).FromC(unsafe.Pointer(&out)) }()
 }
 
+// Computes order of magnitude of double.
 func OrderOfMagnitude(val float64) int32 {
 	return int32(C.ImPlot_OrderOfMagnitude(C.double(val)))
 }
 
+// Returns the precision required for a order of magnitude.
 func OrderToPrecision(order int32) int32 {
 	return int32(C.ImPlot_OrderToPrecision(C.int(order)))
 }
@@ -3050,6 +3251,7 @@ func PixelsToPlotFloatV(x, y float32, x_axis, y_axis AxisEnum) PlotPoint {
 	}()
 }
 
+// Convert pixels to a position in the current plot's coordinate system. Passing IMPLOT_AUTO uses the current axes.
 // PixelsToPlotVec2V parameter default value hint:
 // x_axis: IMPLOT_AUTO
 // y_axis: IMPLOT_AUTO
@@ -4026,6 +4228,7 @@ func PlotDigitaldoublePtrV(label_id string, xs, ys *float64, count int32, spec S
 	specFin()
 }
 
+// Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)
 // PlotDummyV parameter default value hint:
 // spec: ImPlotSpec()
 func PlotDummyV(label_id string, spec Spec) {
@@ -7397,6 +7600,7 @@ func PlotStemsdoublePtrdoublePtrV(label_id string, xs, ys *float64, count int32,
 	specFin()
 }
 
+// Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).
 // PlotTextV parameter default value hint:
 // pix_offset: ImVec2(0,0)
 // spec: ImPlotSpec()
@@ -7409,6 +7613,7 @@ func PlotTextV(text string, x, y float64, pix_offset imgui.Vec2, spec Spec) {
 	specFin()
 }
 
+// Convert a position in the current plot's coordinate system to pixels. Passing IMPLOT_AUTO uses the current axes.
 // PlotToPixelsPlotPointV parameter default value hint:
 // x_axis: IMPLOT_AUTO
 // y_axis: IMPLOT_AUTO
@@ -7429,36 +7634,43 @@ func PlotToPixelsdoubleV(x, y float64, x_axis, y_axis AxisEnum) imgui.Vec2 {
 	}()
 }
 
+// Undo temporary colormap modification(s). Undo multiple pushes at once by increasing count.
 // PopColormapV parameter default value hint:
 // count: 1
 func PopColormapV(count int32) {
 	C.ImPlot_PopColormap(C.int(count))
 }
 
+// Pop plot clip rect. Call between Begin/EndPlot.
 func PopPlotClipRect() {
 	C.ImPlot_PopPlotClipRect()
 }
 
+// Undo temporary style color modification(s). Undo multiple pushes at once by increasing count.
 // PopStyleColorV parameter default value hint:
 // count: 1
 func PopStyleColorV(count int32) {
 	C.ImPlot_PopStyleColor(C.int(count))
 }
 
+// Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count.
 // PopStyleVarV parameter default value hint:
 // count: 1
 func PopStyleVarV(count int32) {
 	C.ImPlot_PopStyleVar(C.int(count))
 }
 
+// Returns a floating point precision to use given a value
 func Precision(val float64) int32 {
 	return int32(C.ImPlot_Precision(C.double(val)))
 }
 
+// Temporarily switch to one of the built-in (i.e. ImPlotColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to call PopColormap!
 func PushColormapPlotColormap(cmap Colormap) {
 	C.ImPlot_PushColormap_PlotColormap(C.ImPlotColormap(cmap))
 }
 
+// Push a colormap by string name. Use built-in names such as "Default", "Deep", "Jet", etc. or a string you provided to AddColormap. Don't forget to call PopColormap!
 func PushColormapStr(name string) {
 	nameArg, nameFin := internal.WrapString[C.char](name)
 	C.ImPlot_PushColormap_Str(nameArg)
@@ -7466,12 +7678,14 @@ func PushColormapStr(name string) {
 	nameFin()
 }
 
+// Push clip rect for rendering to current plot area. The rect can be expanded or contracted by #expand pixels. Call between Begin/EndPlot.
 // PushPlotClipRectV parameter default value hint:
 // expand: 0
 func PushPlotClipRectV(expand float32) {
 	C.ImPlot_PushPlotClipRect(C.float(expand))
 }
 
+// Temporarily modify a style color. Don't forget to call PopStyleColor!
 func PushStyleColorU32(idx Col, col uint32) {
 	C.ImPlot_PushStyleColor_U32(C.ImPlotCol(idx), C.ImU32(col))
 }
@@ -7480,18 +7694,22 @@ func PushStyleColorVec4(idx Col, col imgui.Vec4) {
 	C.ImPlot_PushStyleColor_Vec4(C.ImPlotCol(idx), internal.ReinterpretCast[C.ImVec4_c](col.ToC()))
 }
 
+// Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!
 func PushStyleVarFloat(idx StyleVar, val float32) {
 	C.ImPlot_PushStyleVar_Float(C.ImPlotStyleVar(idx), C.float(val))
 }
 
+// Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!
 func PushStyleVarInt(idx StyleVar, val int32) {
 	C.ImPlot_PushStyleVar_Int(C.ImPlotStyleVar(idx), C.int(val))
 }
 
+// Temporarily modify a style variable of ImVec2 type. Don't forget to call PopStyleVar!
 func PushStyleVarVec2(idx StyleVar, val imgui.Vec2) {
 	C.ImPlot_PushStyleVar_Vec2(C.ImPlotStyleVar(idx), internal.ReinterpretCast[C.ImVec2_c](val.ToC()))
 }
 
+// Returns true if two ranges overlap
 func RangesOverlap(r1, r2 Range) bool {
 	r1Arg, r1Fin := r1.C()
 	r2Arg, r2Fin := r2.C()
@@ -7503,6 +7721,7 @@ func RangesOverlap(r1, r2 Range) bool {
 	return C.ImPlot_RangesOverlap(internal.ReinterpretCast[C.ImPlotRange](r1Arg), internal.ReinterpretCast[C.ImPlotRange](r2Arg)) == C.bool(true)
 }
 
+// Register or get an existing item from the current plot.
 // RegisterOrGetItemV parameter default value hint:
 // just_created: nullptr
 func RegisterOrGetItemV(label_id string, flags ItemFlags, just_created *bool) *Item {
@@ -7516,6 +7735,7 @@ func RegisterOrGetItemV(label_id string, flags ItemFlags, just_created *bool) *I
 	return NewItemFromC(C.ImPlot_RegisterOrGetItem(label_idArg, C.ImPlotItemFlags(flags), just_createdArg))
 }
 
+// Render a colormap bar
 func RenderColorBar(colors *uint32, size int32, DrawList *imgui.DrawList, bounds imgui.Rect, vert, reversed, continuous bool) {
 	colorsArg, colorsFin := internal.WrapNumberPtr[C.ImU32, uint32](colors)
 	DrawListArg, DrawListFin := DrawList.Handle()
@@ -7525,6 +7745,7 @@ func RenderColorBar(colors *uint32, size int32, DrawList *imgui.DrawList, bounds
 	DrawListFin()
 }
 
+// Resets an ImPlot context for the next call to BeginAlignedPlots
 func ResetCtxForNextAlignedPlots(ctx *Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImPlot_ResetCtxForNextAlignedPlots(internal.ReinterpretCast[*C.ImPlotContext](ctxArg))
@@ -7532,6 +7753,7 @@ func ResetCtxForNextAlignedPlots(ctx *Context) {
 	ctxFin()
 }
 
+// Resets an ImPlot context for the next call to BeginPlot
 func ResetCtxForNextPlot(ctx *Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImPlot_ResetCtxForNextPlot(internal.ReinterpretCast[*C.ImPlotContext](ctxArg))
@@ -7539,6 +7761,7 @@ func ResetCtxForNextPlot(ctx *Context) {
 	ctxFin()
 }
 
+// Resets an ImPlot context for the next call to BeginSubplot
 func ResetCtxForNextSubplot(ctx *Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImPlot_ResetCtxForNextSubplot(internal.ReinterpretCast[*C.ImPlotContext](ctxArg))
@@ -7546,6 +7769,7 @@ func ResetCtxForNextSubplot(ctx *Context) {
 	ctxFin()
 }
 
+// Rounds a timestamp up or down to the nearest unit.
 func RoundTime(t PlotTime, unit TimeUnit) PlotTime {
 	return func() PlotTime {
 		out := C.ImPlot_RoundTime(internal.ReinterpretCast[C.ImPlotTime](t.ToC()), C.ImPlotTimeUnit(unit))
@@ -7553,10 +7777,12 @@ func RoundTime(t PlotTime, unit TimeUnit) PlotTime {
 	}()
 }
 
+// Round a value to a given precision
 func RoundTo(val float64, prec int32) float64 {
 	return float64(C.ImPlot_RoundTo(C.double(val), C.int(prec)))
 }
 
+// Sample a color from the current colormap given t between 0 and 1.
 // SampleColormapV parameter default value hint:
 // cmap: IMPLOT_AUTO
 func SampleColormapV(t float32, cmap Colormap) imgui.Vec4 {
@@ -7566,6 +7792,7 @@ func SampleColormapV(t float32, cmap Colormap) imgui.Vec4 {
 	}()
 }
 
+// Linearly interpolates a color from the current colormap given t between 0 and 1.
 func SampleColormapU32(t float32, cmap Colormap) uint32 {
 	return uint32(C.ImPlot_SampleColormapU32(C.float(t), C.ImPlotColormap(cmap)))
 }
@@ -7574,10 +7801,12 @@ func SetAxes(x_axis, y_axis AxisEnum) {
 	C.ImPlot_SetAxes(C.ImAxis(x_axis), C.ImAxis(y_axis))
 }
 
+// Select which axis/axes will be used for subsequent plot elements.
 func SetAxis(axis AxisEnum) {
 	C.ImPlot_SetAxis(C.ImAxis(axis))
 }
 
+// Sets the current ImPlot context.
 func SetCurrentContext(ctx *Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImPlot_SetCurrentContext(internal.ReinterpretCast[*C.ImPlotContext](ctxArg))
@@ -7585,6 +7814,10 @@ func SetCurrentContext(ctx *Context) {
 	ctxFin()
 }
 
+// Sets the current **ImGui** context. This is ONLY necessary if you are compiling
+// ImPlot as a DLL (not recommended) separate from your ImGui compilation. It
+// sets the global variable GImGui, which is not shared across DLL boundaries.
+// See GImGui documentation in imgui.cpp for more details.
 func SetImGuiContext(ctx *imgui.Context) {
 	ctxArg, ctxFin := ctx.Handle()
 	C.ImPlot_SetImGuiContext(internal.ReinterpretCast[*C.ImGuiContext](ctxArg))
@@ -7592,22 +7825,26 @@ func SetImGuiContext(ctx *imgui.Context) {
 	ctxFin()
 }
 
+// Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).
 // SetNextAxesLimitsV parameter default value hint:
 // cond: ImPlotCond_Once
 func SetNextAxesLimitsV(x_min, x_max, y_min, y_max float64, cond Cond) {
 	C.ImPlot_SetNextAxesLimits(C.double(x_min), C.double(x_max), C.double(y_min), C.double(y_max), C.ImPlotCond(cond))
 }
 
+// Sets all upcoming axes to auto fit to their data.
 func SetNextAxesToFit() {
 	C.ImPlot_SetNextAxesToFit()
 }
 
+// Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.
 // SetNextAxisLimitsV parameter default value hint:
 // cond: ImPlotCond_Once
 func SetNextAxisLimitsV(axis AxisEnum, v_min, v_max float64, cond Cond) {
 	C.ImPlot_SetNextAxisLimits(C.ImAxis(axis), C.double(v_min), C.double(v_max), C.ImPlotCond(cond))
 }
 
+// Links an upcoming axis range limits to external values. Set to nullptr for no linkage. The pointer data must remain valid until EndPlot!
 func SetNextAxisLinks(axis AxisEnum, link_min, link_max *float64) {
 	link_minArg, link_minFin := internal.WrapNumberPtr[C.double, float64](link_min)
 	link_maxArg, link_maxFin := internal.WrapNumberPtr[C.double, float64](link_max)
@@ -7617,10 +7854,12 @@ func SetNextAxisLinks(axis AxisEnum, link_min, link_max *float64) {
 	link_maxFin()
 }
 
+// Set an upcoming axis to auto fit to its data.
 func SetNextAxisToFit(axis AxisEnum) {
 	C.ImPlot_SetNextAxisToFit(C.ImAxis(axis))
 }
 
+// Sets the label and/or flags for primary X and Y axes (shorthand for two calls to SetupAxis).
 // SetupAxesV parameter default value hint:
 // x_flags: 0
 // y_flags: 0
@@ -7633,12 +7872,14 @@ func SetupAxesV(x_label, y_label string, x_flags, y_flags AxisFlags) {
 	y_labelFin()
 }
 
+// Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).
 // SetupAxesLimitsV parameter default value hint:
 // cond: ImPlotCond_Once
 func SetupAxesLimitsV(x_min, x_max, y_min, y_max float64, cond Cond) {
 	C.ImPlot_SetupAxesLimits(C.double(x_min), C.double(x_max), C.double(y_min), C.double(y_max), C.ImPlotCond(cond))
 }
 
+// Enables an axis or sets the label and/or flags for an existing axis. Leave #label = nullptr for no label.
 // SetupAxisV parameter default value hint:
 // label: nullptr
 // flags: 0
@@ -7649,6 +7890,7 @@ func SetupAxisV(axis AxisEnum, label string, flags AxisFlags) {
 	labelFin()
 }
 
+// Sets the format of numeric axis labels via formatter callback. Given #value, write a label into #buff. Optionally pass user data.
 // SetupAxisFormatPlotFormatterV parameter default value hint:
 // data: nullptr
 func SetupAxisFormatPlotFormatterV(axis AxisEnum, formatter Formatter, data uintptr) {
@@ -7658,6 +7900,7 @@ func SetupAxisFormatPlotFormatterV(axis AxisEnum, formatter Formatter, data uint
 	formatterFin()
 }
 
+// Sets the format of numeric axis labels via formatter specifier (default="%g"). Formatted values will be double (i.e. use %f).
 func SetupAxisFormatStr(axis AxisEnum, fmt string) {
 	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
 	C.ImPlot_SetupAxisFormat_Str(C.ImAxis(axis), fmtArg)
@@ -7665,16 +7908,19 @@ func SetupAxisFormatStr(axis AxisEnum, fmt string) {
 	fmtFin()
 }
 
+// Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.
 // SetupAxisLimitsV parameter default value hint:
 // cond: ImPlotCond_Once
 func SetupAxisLimitsV(axis AxisEnum, v_min, v_max float64, cond Cond) {
 	C.ImPlot_SetupAxisLimits(C.ImAxis(axis), C.double(v_min), C.double(v_max), C.ImPlotCond(cond))
 }
 
+// Sets an axis' limits constraints.
 func SetupAxisLimitsConstraints(axis AxisEnum, v_min, v_max float64) {
 	C.ImPlot_SetupAxisLimitsConstraints(C.ImAxis(axis), C.double(v_min), C.double(v_max))
 }
 
+// Links an axis range limits to external values. Set to nullptr for no linkage. The pointer data must remain valid until EndPlot.
 func SetupAxisLinks(axis AxisEnum, link_min, link_max *float64) {
 	link_minArg, link_minFin := internal.WrapNumberPtr[C.double, float64](link_min)
 	link_maxArg, link_maxFin := internal.WrapNumberPtr[C.double, float64](link_max)
@@ -7684,10 +7930,12 @@ func SetupAxisLinks(axis AxisEnum, link_min, link_max *float64) {
 	link_maxFin()
 }
 
+// Sets an axis' scale using built-in options.
 func SetupAxisScalePlotScale(axis AxisEnum, scale Scale) {
 	C.ImPlot_SetupAxisScale_PlotScale(C.ImAxis(axis), C.ImPlotScale(scale))
 }
 
+// Sets an axis' scale using user supplied forward and inverse transforms.
 // SetupAxisScalePlotTransformV parameter default value hint:
 // data: nullptr
 func SetupAxisScalePlotTransformV(axis AxisEnum, forward, inverse Transform, data uintptr) {
@@ -7699,6 +7947,7 @@ func SetupAxisScalePlotTransformV(axis AxisEnum, forward, inverse Transform, dat
 	inverseFin()
 }
 
+// Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
 // SetupAxisTicksdoubleV parameter default value hint:
 // labels: nullptr
 // keep_default: false
@@ -7709,6 +7958,7 @@ func SetupAxisTicksdoubleV(axis AxisEnum, v_min, v_max float64, n_ticks int32, l
 	labelsFin()
 }
 
+// Sets an axis' ticks and optionally the labels. To keep the default ticks, set #keep_default=true.
 // SetupAxisTicksdoublePtrV parameter default value hint:
 // labels: nullptr
 // keep_default: false
@@ -7721,30 +7971,37 @@ func SetupAxisTicksdoublePtrV(axis AxisEnum, values *float64, n_ticks int32, lab
 	labelsFin()
 }
 
+// Sets an axis' zoom constraints.
 func SetupAxisZoomConstraints(axis AxisEnum, z_min, z_max float64) {
 	C.ImPlot_SetupAxisZoomConstraints(C.ImAxis(axis), C.double(z_min), C.double(z_max))
 }
 
+// Explicitly finalize plot setup. Once you call this, you cannot make anymore Setup calls for the current plot!
+// Note that calling this function is OPTIONAL; it will be called by the first subsequent setup-locking API call.
 func SetupFinish() {
 	C.ImPlot_SetupFinish()
 }
 
+// Sets up the plot legend. This can also be called immediately after BeginSubplots when using ImPlotSubplotFlags_ShareItems.
 // SetupLegendV parameter default value hint:
 // flags: 0
 func SetupLegendV(location Location, flags LegendFlags) {
 	C.ImPlot_SetupLegend(C.ImPlotLocation(location), C.ImPlotLegendFlags(flags))
 }
 
+// Lock Setup and call SetupFinish if necessary.
 func SetupLock() {
 	C.ImPlot_SetupLock()
 }
 
+// Set the location of the current plot's mouse position text (default = South|East).
 // SetupMouseTextV parameter default value hint:
 // flags: 0
 func SetupMouseTextV(location Location, flags MouseTextFlags) {
 	C.ImPlot_SetupMouseText(C.ImPlotLocation(location), C.ImPlotMouseTextFlags(flags))
 }
 
+// Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).
 // ShowAltLegendV parameter default value hint:
 // vertical: true
 // size: ImVec2(0,0)
@@ -7756,6 +8013,7 @@ func ShowAltLegendV(title_id string, vertical bool, size imgui.Vec2, interactabl
 	title_idFin()
 }
 
+// Shows an axis's context menu.
 // ShowAxisContextMenuV parameter default value hint:
 // time_allowed: false
 func ShowAxisContextMenuV(axis, equal_axis *Axis, time_allowed bool) {
@@ -7767,6 +8025,7 @@ func ShowAxisContextMenuV(axis, equal_axis *Axis, time_allowed bool) {
 	equal_axisFin()
 }
 
+// Shows ImPlot colormap selector dropdown menu.
 func ShowColormapSelector(label string) bool {
 	labelArg, labelFin := internal.WrapString[C.char](label)
 
@@ -7776,6 +8035,10 @@ func ShowColormapSelector(label string) bool {
 	return C.ImPlot_ShowColormapSelector(labelArg) == C.bool(true)
 }
 
+// Shows a date picker widget block (year/month/day).
+// #level = 0 for day, 1 for month, 2 for year. Modified by user interaction.
+// #t will be set when a day is clicked and the function will return true.
+// #t1 and #t2 are optional dates to highlight.
 // ShowDatePickerV parameter default value hint:
 // t1: nullptr
 // t2: nullptr
@@ -7796,6 +8059,7 @@ func ShowDatePickerV(id string, level *int32, t, t1, t2 *PlotTime) bool {
 	return C.ImPlot_ShowDatePicker(idArg, levelArg, internal.ReinterpretCast[*C.ImPlotTime](tArg), internal.ReinterpretCast[*C.ImPlotTime](t1Arg), internal.ReinterpretCast[*C.ImPlotTime](t2Arg)) == C.bool(true)
 }
 
+// Shows the ImPlot demo window (add implot_demo.cpp to your sources!)
 // ShowDemoWindowV parameter default value hint:
 // p_open: nullptr
 func ShowDemoWindowV(p_open *bool) {
@@ -7805,6 +8069,7 @@ func ShowDemoWindowV(p_open *bool) {
 	p_openFin()
 }
 
+// Shows ImPlot input map selector dropdown menu.
 func ShowInputMapSelector(label string) bool {
 	labelArg, labelFin := internal.WrapString[C.char](label)
 
@@ -7814,6 +8079,7 @@ func ShowInputMapSelector(label string) bool {
 	return C.ImPlot_ShowInputMapSelector(labelArg) == C.bool(true)
 }
 
+// Shows a legend's context menu.
 func ShowLegendContextMenu(legend *Legend, visible bool) bool {
 	legendArg, legendFin := legend.Handle()
 
@@ -7823,6 +8089,7 @@ func ShowLegendContextMenu(legend *Legend, visible bool) bool {
 	return C.ImPlot_ShowLegendContextMenu(internal.ReinterpretCast[*C.ImPlotLegend](legendArg), C.bool(visible)) == C.bool(true)
 }
 
+// Renders legend entries into a bounding box
 func ShowLegendEntries(items *ItemGroup, legend_bb imgui.Rect, interactable bool, pad, spacing imgui.Vec2, vertical bool, DrawList *imgui.DrawList) bool {
 	itemsArg, itemsFin := items.Handle()
 	DrawListArg, DrawListFin := DrawList.Handle()
@@ -7834,6 +8101,7 @@ func ShowLegendEntries(items *ItemGroup, legend_bb imgui.Rect, interactable bool
 	return C.ImPlot_ShowLegendEntries(internal.ReinterpretCast[*C.ImPlotItemGroup](itemsArg), internal.ReinterpretCast[C.ImRect_c](legend_bb.ToC()), C.bool(interactable), internal.ReinterpretCast[C.ImVec2_c](pad.ToC()), internal.ReinterpretCast[C.ImVec2_c](spacing.ToC()), C.bool(vertical), internal.ReinterpretCast[*C.ImDrawList](DrawListArg)) == C.bool(true)
 }
 
+// Shows ImPlot metrics/debug information window.
 // ShowMetricsWindowV parameter default value hint:
 // p_popen: nullptr
 func ShowMetricsWindowV(p_popen *bool) {
@@ -7843,6 +8111,7 @@ func ShowMetricsWindowV(p_popen *bool) {
 	p_popenFin()
 }
 
+// Shows a plot's context menu.
 func ShowPlotContextMenu(plot *Plot) {
 	plotArg, plotFin := plot.Handle()
 	C.ImPlot_ShowPlotContextMenu(internal.ReinterpretCast[*C.ImPlotPlot](plotArg))
@@ -7850,6 +8119,7 @@ func ShowPlotContextMenu(plot *Plot) {
 	plotFin()
 }
 
+// Shows ImPlot style editor block (not a window).
 // ShowStyleEditorV parameter default value hint:
 // ref: nullptr
 func ShowStyleEditorV(ref *Style) {
@@ -7859,6 +8129,7 @@ func ShowStyleEditorV(ref *Style) {
 	refFin()
 }
 
+// Shows ImPlot style selector dropdown menu.
 func ShowStyleSelector(label string) bool {
 	labelArg, labelFin := internal.WrapString[C.char](label)
 
@@ -7868,6 +8139,7 @@ func ShowStyleSelector(label string) bool {
 	return C.ImPlot_ShowStyleSelector(labelArg) == C.bool(true)
 }
 
+// Shows a subplot's context menu.
 func ShowSubplotsContextMenu(subplot *Subplot) {
 	subplotArg, subplotFin := subplot.Handle()
 	C.ImPlot_ShowSubplotsContextMenu(internal.ReinterpretCast[*C.ImPlotSubplot](subplotArg))
@@ -7875,6 +8147,8 @@ func ShowSubplotsContextMenu(subplot *Subplot) {
 	subplotFin()
 }
 
+// Shows a time picker widget block (hour/min/sec).
+// #t will be set when a new hour, minute, or sec is selected or am/pm is toggled, and the function will return true.
 func ShowTimePicker(id string, t *PlotTime) bool {
 	idArg, idFin := internal.WrapString[C.char](id)
 	tArg, tFin := internal.Wrap(t)
@@ -7886,10 +8160,12 @@ func ShowTimePicker(id string, t *PlotTime) bool {
 	return C.ImPlot_ShowTimePicker(idArg, internal.ReinterpretCast[*C.ImPlotTime](tArg)) == C.bool(true)
 }
 
+// Add basic help/info block for end users (not a window).
 func ShowUserGuide() {
 	C.ImPlot_ShowUserGuide()
 }
 
+// Style plot colors for current ImGui style (default).
 // StyleColorsAutoV parameter default value hint:
 // dst: nullptr
 func StyleColorsAutoV(dst *Style) {
@@ -7899,6 +8175,7 @@ func StyleColorsAutoV(dst *Style) {
 	dstFin()
 }
 
+// Style plot colors for ImGui "Classic".
 // StyleColorsClassicV parameter default value hint:
 // dst: nullptr
 func StyleColorsClassicV(dst *Style) {
@@ -7908,6 +8185,7 @@ func StyleColorsClassicV(dst *Style) {
 	dstFin()
 }
 
+// Style plot colors for ImGui "Dark".
 // StyleColorsDarkV parameter default value hint:
 // dst: nullptr
 func StyleColorsDarkV(dst *Style) {
@@ -7917,6 +8195,7 @@ func StyleColorsDarkV(dst *Style) {
 	dstFin()
 }
 
+// Style plot colors for ImGui "Light".
 // StyleColorsLightV parameter default value hint:
 // dst: nullptr
 func StyleColorsLightV(dst *Style) {
@@ -7926,10 +8205,12 @@ func StyleColorsLightV(dst *Style) {
 	dstFin()
 }
 
+// Advances to next subplot
 func SubplotNextCell() {
 	C.ImPlot_SubplotNextCell()
 }
 
+// Shows a x-axis tag at the specified coordinate value.
 // TagXBoolV parameter default value hint:
 // round: false
 func TagXBoolV(x float64, col imgui.Vec4, round bool) {
@@ -7943,6 +8224,14 @@ func TagXStr(x float64, col imgui.Vec4, fmt string) {
 	fmtFin()
 }
 
+func TagXStr0(x float64, col imgui.Vec4, fmt string) {
+	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
+	C.ImPlot_TagX_Str0(C.double(x), internal.ReinterpretCast[C.ImVec4_c](col.ToC()), fmtArg)
+
+	fmtFin()
+}
+
+// Shows a y-axis tag at the specified coordinate value.
 // TagYBoolV parameter default value hint:
 // round: false
 func TagYBoolV(y float64, col imgui.Vec4, round bool) {
@@ -7956,6 +8245,14 @@ func TagYStr(y float64, col imgui.Vec4, fmt string) {
 	fmtFin()
 }
 
+func TagYStr0(y float64, col imgui.Vec4, fmt string) {
+	fmtArg, fmtFin := internal.WrapString[C.char](fmt)
+	C.ImPlot_TagY_Str0(C.double(y), internal.ReinterpretCast[C.ImVec4_c](col.ToC()), fmtArg)
+
+	fmtFin()
+}
+
+// Get the current date as a timestamp.
 func Today() PlotTime {
 	return func() PlotTime { out := C.ImPlot_Today(); return *(&PlotTime{}).FromC(unsafe.Pointer(&out)) }()
 }

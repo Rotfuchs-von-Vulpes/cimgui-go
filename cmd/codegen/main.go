@@ -115,10 +115,11 @@ func loadData(f *flags) (*jsonData, error) {
 // this will store json data processed by appropiate pre-rocessors
 type Context struct {
 	// plain idata loaded from json
-	funcs    []FuncDef
-	structs  []StructDef
-	enums    []EnumDef
-	typedefs *Typedefs
+	funcs         []FuncDef
+	structs       []StructDef
+	enums         []EnumDef
+	typedefs      *Typedefs
+	opaqueStructs map[CIdentifier]string
 
 	Skip struct {
 		Funcs, Typedefs, Structs, Methods *Skipper[CIdentifier]
@@ -204,6 +205,11 @@ func parseJson(jsonData *jsonData, f *flags) (*Context, error) {
 		return nil, fmt.Errorf("cannot get typedefs: %w", err)
 	}
 
+	result.opaqueStructs, err = getOpaqueStructs(jsonData.structAndEnums)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get opaque structs: %w", err)
+	}
+
 	result.structs, err = getStructDefs(jsonData.structAndEnums)
 	if err != nil {
 		return nil, fmt.Errorf("cannot get struct definitions: %w", err)
@@ -270,6 +276,7 @@ func main() {
 
 	// 1.2. Generate Go typedefs
 	glg.Info("Generating Go Typedefs...")
+	context.typedefs.data = MergeMaps(context.typedefs.data, context.opaqueStructs)
 	typedefsNames, callbacksToGenerate, err := GenerateTypedefs(context.typedefs, context)
 	if err != nil {
 		glg.Fatalf("Cannot generate typedefs: %v", err)
